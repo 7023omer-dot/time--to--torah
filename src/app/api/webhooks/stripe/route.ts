@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
 // Disable Next.js body parsing for Stripe webhooks
 export const runtime = 'nodejs'
 
-async function getAllocations(
+function getAllocations(
   amountCents: number,
   donationTarget: string
 ): { yeshiva_cents: number; poor_families_cents: number } {
