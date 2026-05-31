@@ -10,29 +10,40 @@
   },
   "home": {
     "hero_title": "Time to Torah",
-    "hero_subtitle": "Daily Torah learning with direct charitable giving",
-    "hero_cta": "Start Learning",
+    "hero_subtitle": "5 minutes of Torah a day, with every subscription going to charity",
+    "hero_cta": "Start Learning Now",
     "hero_free": "Free Lesson",
+    "community_minutes": "minutes of Torah learned together",
+    "community_learners": "learners today",
+    "community_lessons": "lessons completed",
+    "how_it_works": "How It Works",
+    "step1": "Sign Up",
+    "step1_desc": "Create a free account in seconds",
+    "step2": "Choose a Topic",
+    "step2_desc": "From 10 categories — Emunah, Parasha, Halacha and more",
+    "step3": "Learn 5 Minutes",
+    "step3_desc": "A short daily lesson with real depth",
+    "categories_title": "10 Topics to Choose From",
     "features_title": "Why Time to Torah?",
-    "feature_learning_title": "Daily Learning",
-    "feature_learning_desc": "Daily Torah lessons in Parasha, Halacha, Machshava and Gemara.",
+    "feature_5min_title": "5 Minutes a Day",
+    "feature_5min_desc": "Short, deep lessons that fit any schedule",
     "feature_charity_title": "Charitable Giving",
-    "feature_charity_desc": "100% of subscription revenue goes to charity.",
-    "feature_progress_title": "Progress Tracking",
-    "feature_progress_desc": "Track your daily streak and mark completed lessons.",
-    "testimonials_title": "What Our Users Say",
+    "feature_charity_desc": "100% of subscription revenue goes to charity",
+    "feature_achievements_title": "Achievements System",
+    "feature_achievements_desc": "Earn badges, maintain your streak, reward your consistency",
+    "testimonials_title": "What Users Say",
     "cta_title": "Join Now",
-    "cta_subtitle": "Monthly subscription starting from just $4.99"
+    "cta_subtitle": "Monthly subscription starts at just $4.99"
   },
   "auth": {
     "login_title": "Sign In",
-    "register_title": "Create Account",
+    "register_title": "Register",
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm Password",
     "full_name": "Full Name",
     "login_btn": "Sign In",
-    "register_btn": "Create Account",
+    "register_btn": "Register",
     "google_login": "Sign in with Google",
     "no_account": "Don't have an account?",
     "have_account": "Already have an account?",
@@ -52,7 +63,18 @@
     "lessons": "lessons",
     "no_lesson": "No lesson available for today",
     "subscribe_required": "An active subscription is required to view this lesson.",
-    "subscribe_now": "Subscribe Now"
+    "subscribe_now": "Subscribe Now",
+    "category_browser_title": "Choose a Topic and Learn 5 Minutes",
+    "community_bar": "Together we learned X minutes of Torah",
+    "read_more": "Read More"
+  },
+  "lesson": {
+    "rabbi": "Rabbi",
+    "category": "Category",
+    "time": "minutes",
+    "listen": "Listen to Lesson",
+    "related": "More Lessons on This Topic",
+    "back": "Back to Learning"
   },
   "profile": {
     "title": "My Profile",
@@ -60,26 +82,36 @@
     "subscription": "Subscription",
     "streak": "day streak",
     "total_completed": "lessons completed",
+    "total_minutes": "minutes of learning",
     "total_donated": "total donated",
     "payments": "payments",
     "donation_target": "Donation Target",
     "update_donation": "Update Donation Target",
     "manage_subscription": "Manage Subscription",
     "no_subscription": "No active subscription",
-    "donate_history": "Donation History"
+    "donate_history": "Donation History",
+    "achievements": "Achievements",
+    "achievements_empty": "No achievements yet — start learning!",
+    "fav_categories": "Your Favorite Topics",
+    "member_since": "Member since"
   },
   "subscribe": {
-    "title": "Choose Your Subscription Plan",
+    "title": "Choose a Subscription Plan",
     "currency_label": "Currency",
     "most_popular": "Most Popular",
-    "join_now": "Join Now",
+    "join_now": "Join",
     "donation_title": "Where would you like to donate?",
+    "pilot_notice": "Pilot mode — no real charge",
+    "confirm_title": "Confirm Subscription",
+    "confirm_btn": "Confirm — Join!",
+    "cancel": "Cancel",
     "features": {
       "daily_lessons": "Daily Torah lessons",
       "bilingual": "Hebrew & English content",
       "progress": "Progress tracking",
       "video": "Video lessons",
-      "charity": "Charitable donation"
+      "charity": "Charitable donation",
+      "achievements": "Achievements system"
     }
   },
   "plans": {
@@ -101,11 +133,39 @@
     "split_desc": "Your donation is split equally between yeshiva and families in need."
   },
   "categories": {
-    "parasha": "Weekly Parasha",
-    "halacha": "Halacha",
-    "machshava": "Jewish Thought",
+    "emunah": "Emunah",
+    "parasha": "Parasha",
+    "mussar": "Mussar",
+    "mishna": "Mishna",
     "gemara": "Gemara",
-    "mussar": "Mussar"
+    "tehillim": "Tehillim",
+    "halacha": "Halacha",
+    "tzadikim": "Stories of the Righteous",
+    "shalom_bayit": "Shalom Bayit",
+    "parnasa": "Parnasa"
+  },
+  "achievements": {
+    "title": "Achievements",
+    "first_lesson": "First Lesson",
+    "first_lesson_desc": "You completed your first lesson!",
+    "streak_7": "Full Week",
+    "streak_7_desc": "You learned seven days in a row — well done!",
+    "streak_30": "Diligent Month",
+    "streak_30_desc": "A full month of daily study!",
+    "streak_100": "One Hundred Days",
+    "streak_100_desc": "100 days in a row — you've reached yeshiva level!",
+    "matmid": "Matmid",
+    "matmid_desc": "You completed fifty lessons!",
+    "mazke_harabbim": "Mazke HaRabbim",
+    "mazke_harabbim_desc": "You shared the platform with a friend!"
+  },
+  "community": {
+    "total_minutes": "minutes of Torah learned",
+    "total_donated": "donated to charity",
+    "yeshiva": "to yeshiva",
+    "poor_families": "to families",
+    "active_today": "learners today",
+    "total_lessons": "lessons completed"
   },
   "status": {
     "active": "Active",
@@ -116,8 +176,11 @@
   },
   "admin": {
     "title": "Admin Dashboard",
+    "cms": "Content Management (CMS)",
     "total_users": "Users",
     "active_subscribers": "Active Subscribers",
+    "total_lessons_completed": "Lessons Completed",
+    "total_minutes": "Minutes of Torah Learned",
     "total_revenue": "Total Revenue",
     "this_month": "This Month",
     "donation_allocations": "Donation Allocations",
@@ -125,13 +188,24 @@
     "to_families": "To Families",
     "total": "Total",
     "recent_users": "Recent Users",
-    "recent_subscriptions": "Recent Subscriptions"
+    "recent_subscriptions": "Recent Subscriptions",
+    "rabbis": "Rabbis",
+    "add_rabbi": "Add Rabbi",
+    "categories": "Categories",
+    "lessons": "Lessons",
+    "add_lesson": "Add Lesson",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "errors": {
     "generic": "An error occurred. Please try again.",
     "not_found": "Not found.",
     "unauthorized": "Unauthorized.",
-    "server_error": "Server error."
+    "server_error": "Server error.",
+    "subscription_required": "Active subscription required.",
+    "auth_required": "Authentication required."
   },
   "footer": {
     "charity_note": "All proceeds go to charity",

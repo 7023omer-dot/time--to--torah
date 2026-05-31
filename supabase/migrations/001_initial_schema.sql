@@ -32,6 +32,31 @@ create table public.subscriptions (
   updated_at timestamptz default now()
 );
 
+-- Rabbis
+create table public.rabbis (
+  id uuid default uuid_generate_v4() primary key,
+  name_he text not null,
+  name_en text not null,
+  bio_he text,
+  bio_en text,
+  photo_url text,
+  is_active boolean default true,
+  created_at timestamptz default now()
+);
+
+-- Categories
+create table public.categories (
+  id uuid default uuid_generate_v4() primary key,
+  slug text unique not null,
+  name_he text not null,
+  name_en text not null,
+  description_he text,
+  description_en text,
+  icon text not null,
+  display_order integer default 0,
+  is_active boolean default true
+);
+
 -- Torah lessons
 create table public.lessons (
   id uuid default uuid_generate_v4() primary key,
@@ -39,11 +64,16 @@ create table public.lessons (
   title_en text not null,
   content_he text not null,
   content_en text not null,
+  summary_he text,
+  summary_en text,
   youtube_id text,
+  audio_url text,
   parasha text,
-  category text check (category in ('parasha', 'halacha', 'machshava', 'gemara', 'mussar')),
+  category_id uuid references public.categories(id) on delete set null,
+  rabbi_id uuid references public.rabbis(id) on delete set null,
   lesson_date date unique not null,
   is_free boolean default false,
+  estimated_minutes integer default 5,
   created_at timestamptz default now()
 );
 
@@ -67,6 +97,28 @@ create table public.donation_allocations (
   yeshiva_cents integer not null default 0,
   poor_families_cents integer not null default 0,
   payment_date timestamptz default now()
+);
+
+-- Achievement definitions
+create table public.achievements (
+  id uuid default uuid_generate_v4() primary key,
+  slug text unique not null,
+  name_he text not null,
+  name_en text not null,
+  description_he text not null,
+  description_en text not null,
+  icon text not null,
+  condition_type text not null check (condition_type in ('streak', 'total_lessons', 'first_lesson', 'share')),
+  condition_value integer default 0
+);
+
+-- User achievements (earned)
+create table public.user_achievements (
+  id uuid default uuid_generate_v4() primary key,
+  user_id uuid references public.profiles(id) on delete cascade not null,
+  achievement_id uuid references public.achievements(id) on delete cascade not null,
+  earned_at timestamptz default now(),
+  unique(user_id, achievement_id)
 );
 
 -- Updated_at trigger

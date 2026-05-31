@@ -10,16 +10,27 @@
   },
   "home": {
     "hero_title": "עת לתורה",
-    "hero_subtitle": "לימוד תורה יומי עם תרומה ישירה לצדקה",
-    "hero_cta": "התחל ללמוד",
+    "hero_subtitle": "לימוד תורה יומי של 5 דקות עם תרומה ישירה לצדקה",
+    "hero_cta": "התחל ללמוד עכשיו",
     "hero_free": "שיעור חינמי",
+    "community_minutes": "דקות תורה נלמדו ביחד",
+    "community_learners": "לומדים היום",
+    "community_lessons": "שיעורים הושלמו",
+    "how_it_works": "איך זה עובד?",
+    "step1": "הירשם",
+    "step1_desc": "צור חשבון חינמי תוך שניות",
+    "step2": "בחר נושא",
+    "step2_desc": "מ-10 קטגוריות — אמונה, פרשה, הלכה ועוד",
+    "step3": "למד 5 דקות",
+    "step3_desc": "שיעור יומי קצר עם עומק אמיתי",
+    "categories_title": "10 נושאים לבחור מהם",
     "features_title": "למה עת לתורה?",
-    "feature_learning_title": "לימוד יומי",
-    "feature_learning_desc": "שיעורי תורה יומיים בפרשת השבוע, הלכה, מחשבה וגמרא.",
+    "feature_5min_title": "5 דקות ביום",
+    "feature_5min_desc": "שיעורים קצרים ועמוקים שמתאימים לכל לוח זמנים",
     "feature_charity_title": "תרומה לצדקה",
-    "feature_charity_desc": "100% מהכנסות המנוי מופנות לצדקה.",
-    "feature_progress_title": "מעקב התקדמות",
-    "feature_progress_desc": "עקוב אחרי הרצף היומי שלך וסמן שיעורים שסיימת.",
+    "feature_charity_desc": "100% מהכנסות המנוי מופנות לצדקה",
+    "feature_achievements_title": "מערכת הישגים",
+    "feature_achievements_desc": "צבור ניקוד, שמור על רצף יומי, ותן לעצמך פרסים",
     "testimonials_title": "מה אומרים המשתמשים",
     "cta_title": "הצטרף עכשיו",
     "cta_subtitle": "מנוי חודשי מתחיל מ-₪18.90 בלבד"
@@ -52,7 +63,18 @@
     "lessons": "שיעורים",
     "no_lesson": "אין שיעור זמין להיום",
     "subscribe_required": "נדרש מנוי פעיל לצפייה בשיעור זה.",
-    "subscribe_now": "הצטרף עכשיו"
+    "subscribe_now": "הצטרף עכשיו",
+    "category_browser_title": "בחר נושא ולמד 5 דקות",
+    "community_bar": "ביחד למדנו X דקות תורה",
+    "read_more": "קרא עוד"
+  },
+  "lesson": {
+    "rabbi": "רב",
+    "category": "קטגוריה",
+    "time": "דקות",
+    "listen": "האזן לשיעור",
+    "related": "שיעורים נוספים בנושא",
+    "back": "חזור ללמידה"
   },
   "profile": {
     "title": "הפרופיל שלי",
@@ -60,26 +82,36 @@
     "subscription": "מנוי",
     "streak": "ימים רצופים",
     "total_completed": "שיעורים הושלמו",
+    "total_minutes": "דקות למידה",
     "total_donated": "תרמת סה\"כ",
     "payments": "תשלומים",
     "donation_target": "יעד התרומה",
     "update_donation": "עדכן יעד תרומה",
     "manage_subscription": "נהל מנוי",
     "no_subscription": "אין מנוי פעיל",
-    "donate_history": "היסטוריית תרומות"
+    "donate_history": "היסטוריית תרומות",
+    "achievements": "הישגים",
+    "achievements_empty": "אין הישגים עדיין — התחל ללמוד!",
+    "fav_categories": "הנושאים האהובים עליך",
+    "member_since": "חבר מאז"
   },
   "subscribe": {
     "title": "בחר תוכנית מנוי",
     "currency_label": "מטבע",
     "most_popular": "הכי פופולרי",
-    "join_now": "הצטרף עכשיו",
+    "join_now": "הצטרף",
     "donation_title": "לאן תרצה לתרום?",
+    "pilot_notice": "מצב פיילוט — אין חיוב אמיתי",
+    "confirm_title": "אישור הצטרפות",
+    "confirm_btn": "אישור — הצטרף!",
+    "cancel": "ביטול",
     "features": {
       "daily_lessons": "שיעורי תורה יומיים",
       "bilingual": "תוכן בעברית ואנגלית",
       "progress": "מעקב התקדמות",
       "video": "וידאו שיעורים",
-      "charity": "תרומה לצדקה"
+      "charity": "תרומה לצדקה",
+      "achievements": "מערכת הישגים"
     }
   },
   "plans": {
@@ -101,11 +133,39 @@
     "split_desc": "תרומתך תחולק שווה בשווה בין ישיבה ומשפחות נזקקות."
   },
   "categories": {
+    "emunah": "אמונה",
     "parasha": "פרשת השבוע",
-    "halacha": "הלכה",
-    "machshava": "מחשבה",
+    "mussar": "מוסר",
+    "mishna": "משנה",
     "gemara": "גמרא",
-    "mussar": "מוסר"
+    "tehillim": "תהילים",
+    "halacha": "הלכה",
+    "tzadikim": "סיפורי צדיקים",
+    "shalom_bayit": "שלום בית",
+    "parnasa": "פרנסה"
+  },
+  "achievements": {
+    "title": "הישגים",
+    "first_lesson": "שיעור ראשון",
+    "first_lesson_desc": "סיימת את השיעור הראשון שלך!",
+    "streak_7": "שבוע שלם",
+    "streak_7_desc": "למדת שבעה ימים ברצף — כל הכבוד!",
+    "streak_30": "חודש מתמיד",
+    "streak_30_desc": "חודש שלם של לימוד יומי!",
+    "streak_100": "מאה ימים",
+    "streak_100_desc": "מאה ימים ברצף — הגעת לרמה של מתמידי ישיבה!",
+    "matmid": "מתמיד",
+    "matmid_desc": "סיימת חמישים שיעורים!",
+    "mazke_harabbim": "מזכה הרבים",
+    "mazke_harabbim_desc": "שיתפת את הפלטפורמה עם חבר!"
+  },
+  "community": {
+    "total_minutes": "דקות תורה נלמדו",
+    "total_donated": "נתרם לצדקה",
+    "yeshiva": "לישיבה",
+    "poor_families": "למשפחות",
+    "active_today": "לומדים היום",
+    "total_lessons": "שיעורים הושלמו"
   },
   "status": {
     "active": "פעיל",
@@ -116,8 +176,11 @@
   },
   "admin": {
     "title": "לוח ניהול",
+    "cms": "ניהול תוכן (CMS)",
     "total_users": "משתמשים",
     "active_subscribers": "מנויים פעילים",
+    "total_lessons_completed": "שיעורים הושלמו",
+    "total_minutes": "דקות תורה נלמדו",
     "total_revenue": "הכנסה כוללת",
     "this_month": "החודש",
     "donation_allocations": "הקצאות תרומה",
@@ -125,13 +188,24 @@
     "to_families": "למשפחות",
     "total": "סה\"כ",
     "recent_users": "משתמשים אחרונים",
-    "recent_subscriptions": "מנויים אחרונים"
+    "recent_subscriptions": "מנויים אחרונים",
+    "rabbis": "רבנים",
+    "add_rabbi": "הוסף רב",
+    "categories": "קטגוריות",
+    "lessons": "שיעורים",
+    "add_lesson": "הוסף שיעור",
+    "edit": "ערוך",
+    "delete": "מחק",
+    "save": "שמור",
+    "cancel": "ביטול"
   },
   "errors": {
     "generic": "שגיאה. נסה שוב.",
     "not_found": "לא נמצא.",
     "unauthorized": "אין הרשאה.",
-    "server_error": "שגיאת שרת."
+    "server_error": "שגיאת שרת.",
+    "subscription_required": "נדרש מנוי פעיל.",
+    "auth_required": "נדרשת כניסה לחשבון."
   },
   "footer": {
     "charity_note": "כל הכנסות מופנות לצדקה",
