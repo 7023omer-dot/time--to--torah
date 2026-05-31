@@ -1,0 +1,143 @@
+{
+  "nav": {
+    "logo": "עת לתורה",
+    "learn": "לימוד",
+    "profile": "פרופיל",
+    "subscribe": "הרשמה",
+    "login": "כניסה",
+    "logout": "יציאה",
+    "admin": "ניהול"
+  },
+  "home": {
+    "hero_title": "עת לתורה",
+    "hero_subtitle": "לימוד תורה יומי עם תרומה ישירה לצדקה",
+    "hero_cta": "התחל ללמוד",
+    "hero_free": "שיעור חינמי",
+    "features_title": "למה עת לתורה?",
+    "feature_learning_title": "לימוד יומי",
+    "feature_learning_desc": "שיעורי תורה יומיים בפרשת השבוע, הלכה, מחשבה וגמרא.",
+    "feature_charity_title": "תרומה לצדקה",
+    "feature_charity_desc": "100% מהכנסות המנוי מופנות לצדקה.",
+    "feature_progress_title": "מעקב התקדמות",
+    "feature_progress_desc": "עקוב אחרי הרצף היומי שלך וסמן שיעורים שסיימת.",
+    "testimonials_title": "מה אומרים המשתמשים",
+    "cta_title": "הצטרף עכשיו",
+    "cta_subtitle": "מנוי חודשי מתחיל מ-₪18.90 בלבד"
+  },
+  "auth": {
+    "login_title": "כניסה לחשבון",
+    "register_title": "הרשמה",
+    "email": "אימייל",
+    "password": "סיסמה",
+    "confirm_password": "אימות סיסמה",
+    "full_name": "שם מלא",
+    "login_btn": "כניסה",
+    "register_btn": "הירשם",
+    "google_login": "כניסה עם Google",
+    "no_account": "אין לך חשבון?",
+    "have_account": "כבר יש לך חשבון?",
+    "register_link": "הירשם כאן",
+    "login_link": "כניסה",
+    "invalid_credentials": "כתובת אימייל או סיסמה שגויים.",
+    "email_taken": "כתובת אימייל זו כבר רשומה.",
+    "passwords_mismatch": "הסיסמאות אינן תואמות."
+  },
+  "learn": {
+    "title": "שיעור היום",
+    "mark_complete": "סיימתי ללמוד",
+    "completed": "הושלם",
+    "show_video": "צפה בשיעור וידאו",
+    "hide_video": "הסתר וידאו",
+    "streak": "ימים רצופים",
+    "lessons": "שיעורים",
+    "no_lesson": "אין שיעור זמין להיום",
+    "subscribe_required": "נדרש מנוי פעיל לצפייה בשיעור זה.",
+    "subscribe_now": "הצטרף עכשיו"
+  },
+  "profile": {
+    "title": "הפרופיל שלי",
+    "personal": "פרטים אישיים",
+    "subscription": "מנוי",
+    "streak": "ימים רצופים",
+    "total_completed": "שיעורים הושלמו",
+    "total_donated": "תרמת סה\"כ",
+    "payments": "תשלומים",
+    "donation_target": "יעד התרומה",
+    "update_donation": "עדכן יעד תרומה",
+    "manage_subscription": "נהל מנוי",
+    "no_subscription": "אין מנוי פעיל",
+    "donate_history": "היסטוריית תרומות"
+  },
+  "subscribe": {
+    "title": "בחר תוכנית מנוי",
+    "currency_label": "מטבע",
+    "most_popular": "הכי פופולרי",
+    "join_now": "הצטרף עכשיו",
+    "donation_title": "לאן תרצה לתרום?",
+    "features": {
+      "daily_lessons": "שיעורי תורה יומיים",
+      "bilingual": "תוכן בעברית ואנגלית",
+      "progress": "מעקב התקדמות",
+      "video": "וידאו שיעורים",
+      "charity": "תרומה לצדקה"
+    }
+  },
+  "plans": {
+    "monthly": "חודשי",
+    "biannual": "חצי שנתי",
+    "annual": "שנתי",
+    "monthly_period": "לחודש",
+    "biannual_period": "ל-6 חודשים",
+    "annual_period": "לשנה",
+    "save_biannual": "חסכון 21%",
+    "save_annual": "חסכון 35%"
+  },
+  "donation_targets": {
+    "yeshiva": "ישיבה",
+    "poor_families": "משפחות נזקקות",
+    "split_50_50": "חלוקה שווה 50/50",
+    "yeshiva_desc": "תרומתך תועבר במלואה לתמיכה בלומדי תורה בישיבה.",
+    "poor_families_desc": "תרומתך תועבר למשפחות נזקקות בקהילה היהודית.",
+    "split_desc": "תרומתך תחולק שווה בשווה בין ישיבה ומשפחות נזקקות."
+  },
+  "categories": {
+    "parasha": "פרשת השבוע",
+    "halacha": "הלכה",
+    "machshava": "מחשבה",
+    "gemara": "גמרא",
+    "mussar": "מוסר"
+  },
+  "status": {
+    "active": "פעיל",
+    "canceled": "מבוטל",
+    "past_due": "באיחור",
+    "trialing": "ניסיון",
+    "incomplete": "לא שלם"
+  },
+  "admin": {
+    "title": "לוח ניהול",
+    "total_users": "משתמשים",
+    "active_subscribers": "מנויים פעילים",
+    "total_revenue": "הכנסה כוללת",
+    "this_month": "החודש",
+    "donation_allocations": "הקצאות תרומה",
+    "to_yeshiva": "לישיבה",
+    "to_families": "למשפחות",
+    "total": "סה\"כ",
+    "recent_users": "משתמשים אחרונים",
+    "recent_subscriptions": "מנויים אחרונים"
+  },
+  "errors": {
+    "generic": "שגיאה. נסה שוב.",
+    "not_found": "לא נמצא.",
+    "unauthorized": "אין הרשאה.",
+    "server_error": "שגיאת שרת."
+  },
+  "footer": {
+    "charity_note": "כל הכנסות מופנות לצדקה",
+    "rights": "כל הזכויות שמורות",
+    "links": "קישורים",
+    "privacy": "פרטיות",
+    "terms": "תנאי שימוש"
+  }
+}

@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8C97A;
+  --gold-dark: #A07830;
+  --parchment: #FDF6E3;
+  --ink: #1A1208;
+  --stone: #8B7355;
+
+  --background: var(--parchment);
+  --foreground: var(--ink);
+}
+
+@layer base {
+  html {
+    direction: rtl;
+  }
+
+  body {
+    @apply bg-parchment text-ink font-body;
+    font-family: var(--font-heebo), 'Heebo', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-frank-ruhl), 'Frank Ruhl Libre', serif;
+    @apply text-ink;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gold hover:bg-gold-dark text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 inline-flex items-center justify-center;
+  }
+
+  .btn-secondary {
+    @apply bg-transparent border-2 border-gold text-gold hover:bg-gold hover:text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 inline-flex items-center justify-center;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-stone hover:text-ink font-medium px-4 py-2 rounded-lg transition-colors duration-200 inline-flex items-center justify-center;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-sm border border-gold/20 p-6;
+  }
+
+  .card-parchment {
+    @apply bg-parchment rounded-xl shadow-sm border border-gold/30 p-6;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-3 border border-stone/30 rounded-lg bg-white text-ink placeholder-stone/60 focus:outline-none focus:ring-2 focus:ring-gold focus:border-transparent transition-all duration-200;
+  }
+
+  .label {
+    @apply block text-sm font-medium text-ink mb-1;
+  }
+
+  .section-title {
+    @apply text-3xl font-heading font-bold text-ink mb-4;
+  }
+
+  .badge-savings {
+    @apply inline-block bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded-full;
+  }
+}
+
+@layer utilities {
+  .rtl {
+    direction: rtl;
+    text-align: right;
+  }
+
+  .ltr {
+    direction: ltr;
+    text-align: left;
+  }
+
+  .font-heading {
+    font-family: var(--font-frank-ruhl), 'Frank Ruhl Libre', serif;
+  }
+
+  .font-body {
+    font-family: var(--font-heebo), 'Heebo', sans-serif;
+  }
+
+  .text-gold {
+    color: var(--gold);
+  }
+
+  .bg-parchment-dark {
+    background-color: #f5ead0;
+  }
+
+  .gold-border {
+    border-color: var(--gold);
+  }
+
+  .gold-divider {
+    @apply border-t border-gold/30 my-6;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* Hebrew specific */
+.hebrew-text {
+  font-family: var(--font-frank-ruhl), 'Frank Ruhl Libre', serif;
+  direction: rtl;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--parchment);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--stone);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-dark);
+}

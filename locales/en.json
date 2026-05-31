@@ -1,0 +1,143 @@
+{
+  "nav": {
+    "logo": "Time to Torah",
+    "learn": "Learn",
+    "profile": "Profile",
+    "subscribe": "Subscribe",
+    "login": "Login",
+    "logout": "Logout",
+    "admin": "Admin"
+  },
+  "home": {
+    "hero_title": "Time to Torah",
+    "hero_subtitle": "Daily Torah learning with direct charitable giving",
+    "hero_cta": "Start Learning",
+    "hero_free": "Free Lesson",
+    "features_title": "Why Time to Torah?",
+    "feature_learning_title": "Daily Learning",
+    "feature_learning_desc": "Daily Torah lessons in Parasha, Halacha, Machshava and Gemara.",
+    "feature_charity_title": "Charitable Giving",
+    "feature_charity_desc": "100% of subscription revenue goes to charity.",
+    "feature_progress_title": "Progress Tracking",
+    "feature_progress_desc": "Track your daily streak and mark completed lessons.",
+    "testimonials_title": "What Our Users Say",
+    "cta_title": "Join Now",
+    "cta_subtitle": "Monthly subscription starting from just $4.99"
+  },
+  "auth": {
+    "login_title": "Sign In",
+    "register_title": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "full_name": "Full Name",
+    "login_btn": "Sign In",
+    "register_btn": "Create Account",
+    "google_login": "Sign in with Google",
+    "no_account": "Don't have an account?",
+    "have_account": "Already have an account?",
+    "register_link": "Register here",
+    "login_link": "Sign in",
+    "invalid_credentials": "Invalid email or password.",
+    "email_taken": "This email is already registered.",
+    "passwords_mismatch": "Passwords do not match."
+  },
+  "learn": {
+    "title": "Today's Lesson",
+    "mark_complete": "Mark as Complete",
+    "completed": "Completed",
+    "show_video": "Watch Video Lesson",
+    "hide_video": "Hide Video",
+    "streak": "day streak",
+    "lessons": "lessons",
+    "no_lesson": "No lesson available for today",
+    "subscribe_required": "An active subscription is required to view this lesson.",
+    "subscribe_now": "Subscribe Now"
+  },
+  "profile": {
+    "title": "My Profile",
+    "personal": "Personal Details",
+    "subscription": "Subscription",
+    "streak": "day streak",
+    "total_completed": "lessons completed",
+    "total_donated": "total donated",
+    "payments": "payments",
+    "donation_target": "Donation Target",
+    "update_donation": "Update Donation Target",
+    "manage_subscription": "Manage Subscription",
+    "no_subscription": "No active subscription",
+    "donate_history": "Donation History"
+  },
+  "subscribe": {
+    "title": "Choose Your Subscription Plan",
+    "currency_label": "Currency",
+    "most_popular": "Most Popular",
+    "join_now": "Join Now",
+    "donation_title": "Where would you like to donate?",
+    "features": {
+      "daily_lessons": "Daily Torah lessons",
+      "bilingual": "Hebrew & English content",
+      "progress": "Progress tracking",
+      "video": "Video lessons",
+      "charity": "Charitable donation"
+    }
+  },
+  "plans": {
+    "monthly": "Monthly",
+    "biannual": "Biannual",
+    "annual": "Annual",
+    "monthly_period": "per month",
+    "biannual_period": "for 6 months",
+    "annual_period": "per year",
+    "save_biannual": "Save 21%",
+    "save_annual": "Save 35%"
+  },
+  "donation_targets": {
+    "yeshiva": "Yeshiva",
+    "poor_families": "Poor Families",
+    "split_50_50": "Split 50/50",
+    "yeshiva_desc": "Your donation goes entirely to support Torah students in yeshiva.",
+    "poor_families_desc": "Your donation supports families in need in the Jewish community.",
+    "split_desc": "Your donation is split equally between yeshiva and families in need."
+  },
+  "categories": {
+    "parasha": "Weekly Parasha",
+    "halacha": "Halacha",
+    "machshava": "Jewish Thought",
+    "gemara": "Gemara",
+    "mussar": "Mussar"
+  },
+  "status": {
+    "active": "Active",
+    "canceled": "Canceled",
+    "past_due": "Past Due",
+    "trialing": "Trial",
+    "incomplete": "Incomplete"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "total_users": "Users",
+    "active_subscribers": "Active Subscribers",
+    "total_revenue": "Total Revenue",
+    "this_month": "This Month",
+    "donation_allocations": "Donation Allocations",
+    "to_yeshiva": "To Yeshiva",
+    "to_families": "To Families",
+    "total": "Total",
+    "recent_users": "Recent Users",
+    "recent_subscriptions": "Recent Subscriptions"
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "not_found": "Not found.",
+    "unauthorized": "Unauthorized.",
+    "server_error": "Server error."
+  },
+  "footer": {
+    "charity_note": "All proceeds go to charity",
+    "rights": "All rights reserved",
+    "links": "Links",
+    "privacy": "Privacy",
+    "terms": "Terms of Service"
+  }
+}
