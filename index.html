@@ -4,6 +4,68 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Time to Torah — עת לתורה</title>
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    // ── הכנס כאן את הפרטים מ-EmailJS לאחר ההרשמה ──
+    const EMAILJS_PUBLIC_KEY    = 'YOUR_PUBLIC_KEY';      // מ: Account → API Keys
+    const EMAILJS_SERVICE_ID    = 'YOUR_SERVICE_ID';      // מ: Email Services
+    const EMAILJS_WELCOME_TMPL  = 'template_welcome';     // תבנית ברוך הבא
+    const EMAILJS_REMINDER_TMPL = 'template_reminder';    // תבנית תזכורת יומית
+
+    window.addEventListener('load', () => {
+      if (EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+      }
+    });
+
+    function sendWelcomeEmail(name, email, plan) {
+      if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') return;
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_WELCOME_TMPL, {
+        to_name:  name,
+        to_email: email,
+        plan:     plan,
+        app_name: 'Time to Torah — עת לתורה',
+        learn_url: 'https://7023omer-dot.github.io/time--to--torah/',
+      }).catch(console.error);
+    }
+
+    function sendReminderConfirmEmail(name, email, time) {
+      if (EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') return;
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_REMINDER_TMPL, {
+        to_name:   name || 'חבר יקר',
+        to_email:  email,
+        time:      time,
+        app_name:  'Time to Torah — עת לתורה',
+        learn_url: 'https://7023omer-dot.github.io/time--to--torah/',
+      }).catch(console.error);
+    }
+
+    // ── תזכורת יומית אמיתית דרך דפדפן (Web Push) ──
+    function scheduleDailyReminder(time, email) {
+      if (!('Notification' in window)) return;
+      Notification.requestPermission().then(perm => {
+        if (perm !== 'granted') return;
+        const [h, m] = time.split(':').map(Number);
+        function scheduleNext() {
+          const now = new Date();
+          const next = new Date();
+          next.setHours(h, m, 0, 0);
+          if (next <= now) next.setDate(next.getDate() + 1);
+          const ms = next - now;
+          setTimeout(() => {
+            new Notification('⏰ עת לתורה', {
+              body: 'הגיע הזמן ללמוד תורה! 5 דקות שמשנות את היום 📖',
+              icon: 'https://7023omer-dot.github.io/time--to--torah/favicon.ico',
+              badge: 'https://7023omer-dot.github.io/time--to--torah/favicon.ico',
+            });
+            scheduleNext();
+          }, ms);
+        }
+        scheduleNext();
+      });
+    }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -1548,73 +1610,79 @@
     <div class="section-narrow">
       <h2 class="section-title">בחר את <span>הנושא שלך</span></h2>
       <div class="categories-grid">
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('emunah')">
           <span class="category-icon">🌟</span>
           <div class="category-name">אמונה וביטחון</div>
           <div class="category-desc">חיזוק האמונה וביטחון בה׳ בכל מצב</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('parasha')">
           <span class="category-icon">📖</span>
           <div class="category-name">פרשת השבוע</div>
           <div class="category-desc">תובנות עמוקות מפרשת השבוע</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('mussar')">
           <span class="category-icon">📜</span>
           <div class="category-name">מוסר</div>
           <div class="category-desc">שיפור המידות וטוהר הנפש</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('mishna')">
           <span class="category-icon">📚</span>
           <div class="category-name">משנה יומית</div>
           <div class="category-desc">לימוד משנה ממוקד ומובן</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('gemara')">
           <span class="category-icon">📖</span>
           <div class="category-name">גמרא ב-5 דקות</div>
           <div class="category-desc">עמוד גמרא בגישה נגישה</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('tehillim')">
           <span class="category-icon">🙏</span>
           <div class="category-name">תהילים</div>
           <div class="category-desc">כוחם של מזמורי תהילים</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('halacha')">
           <span class="category-icon">🕯️</span>
           <div class="category-name">הלכה יומית</div>
           <div class="category-desc">הלכה למעשה בשפה ברורה</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="loadBabaSaliLesson(); navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('tzadikim')">
           <span class="category-icon">👑</span>
           <div class="category-name">סיפורי צדיקים</div>
           <div class="category-desc">סיפורים מעוררי השראה</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('shalom_bayit')">
           <span class="category-icon">🏠</span>
           <div class="category-name">שלום בית</div>
           <div class="category-desc">חיזוק הבית היהודי</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('parnasa')">
           <span class="category-icon">💰</span>
           <div class="category-name">פרנסה ותורה</div>
           <div class="category-desc">הצלחה כלכלית לפי התורה</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card category-special" onclick="loadTikkunKlali(); navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('chassidut')">
+          <span class="category-icon">✨</span>
+          <div class="category-name">חסידות</div>
+          <div class="category-desc">תורת הבעל שם טוב והחסידות</div>
+          <span class="badge-time">5 דק׳</span>
+        </div>
+        <div class="category-card category-special" onclick="loadTikkunKlali()">
           <span class="category-icon">📿</span>
           <div class="category-name">תיקון הכללי</div>
           <div class="category-desc">י׳ מזמורי תהילים — רבי נחמן מברסלב</div>
           <span class="badge-time">10 דק׳</span>
         </div>
-        <div class="category-card category-special" onclick="loadTikkunChatzot(); navigate('lesson')">
+        <div class="category-card category-special" onclick="loadTikkunChatzot()">
           <span class="category-icon">🌙</span>
           <div class="category-name">תיקון חצות</div>
           <div class="category-desc">תפילת חצות הלילה על חורבן הבית</div>
@@ -1760,65 +1828,83 @@
     <div class="section-narrow">
       <h2 class="section-title">כל <span>הקטגוריות</span></h2>
       <div class="categories-grid">
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('emunah')">
           <span class="category-icon">🌟</span>
           <div class="category-name">אמונה וביטחון</div>
           <div class="category-desc">חיזוק האמונה</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('parasha')">
           <span class="category-icon">📖</span>
           <div class="category-name">פרשת השבוע</div>
           <div class="category-desc">תובנות השבוע</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('mussar')">
           <span class="category-icon">📜</span>
           <div class="category-name">מוסר</div>
           <div class="category-desc">שיפור המידות</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('mishna')">
           <span class="category-icon">📚</span>
           <div class="category-name">משנה יומית</div>
           <div class="category-desc">לימוד ממוקד</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('gemara')">
           <span class="category-icon">📖</span>
           <div class="category-name">גמרא</div>
           <div class="category-desc">גמרא נגישה</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('tehillim')">
           <span class="category-icon">🙏</span>
           <div class="category-name">תהילים</div>
           <div class="category-desc">כוח המזמורים</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('halacha')">
           <span class="category-icon">🕯️</span>
           <div class="category-name">הלכה יומית</div>
           <div class="category-desc">הלכה למעשה</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('tzadikim')">
           <span class="category-icon">👑</span>
           <div class="category-name">סיפורי צדיקים</div>
           <div class="category-desc">השראה יומית</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('shalom_bayit')">
           <span class="category-icon">🏠</span>
           <div class="category-name">שלום בית</div>
           <div class="category-desc">חיזוק הבית</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadLesson('parnasa')">
           <span class="category-icon">💰</span>
           <div class="category-name">פרנסה ותורה</div>
           <div class="category-desc">הצלחה בעסקים</div>
           <span class="badge-time">5 דק׳</span>
+        </div>
+        <div class="category-card" onclick="loadLesson('chassidut')">
+          <span class="category-icon">✨</span>
+          <div class="category-name">חסידות</div>
+          <div class="category-desc">תורת הבעל שם טוב והחסידות</div>
+          <span class="badge-time">5 דק׳</span>
+        </div>
+        <div class="category-card category-special" onclick="loadTikkunKlali()">
+          <span class="category-icon">📿</span>
+          <div class="category-name">תיקון הכללי</div>
+          <div class="category-desc">י׳ מזמורי תהילים — רבי נחמן מברסלב</div>
+          <span class="badge-time">10 דק׳</span>
+        </div>
+        <div class="category-card category-special" onclick="loadTikkunChatzot()">
+          <span class="category-icon">🌙</span>
+          <div class="category-name">תיקון חצות</div>
+          <div class="category-desc">תפילת חצות הלילה על חורבן הבית</div>
+          <span class="badge-time">10 דק׳</span>
         </div>
       </div>
     </div>
@@ -2450,12 +2536,25 @@
   function submitPayment() {
     const name = document.getElementById('payName').value.trim();
     const email = document.getElementById('payEmail').value.trim();
-    if (!name || !email) {
-      alert('אנא מלא שם ואימייל');
-      return;
-    }
+    if (!name || !email) { alert('אנא מלא שם ואימייל'); return; }
+
+    // Show loading state
+    const btn = event.target;
+    btn.textContent = 'שולח...';
+    btn.disabled = true;
+
     document.getElementById('modalForm').style.display = 'none';
     document.getElementById('modalSuccess').style.display = 'block';
+
+    // Send real welcome email
+    const plan = selectedPlan || 'חודשי';
+    const planLabels = { monthly: 'חודשי', biannual: 'חצי שנתי', annual: 'שנתי' };
+    sendWelcomeEmail(name, email, planLabels[plan] || plan);
+
+    // Save for reminder
+    localStorage.setItem('ttt_user_name', name);
+    localStorage.setItem('ttt_user_email', email);
+    localStorage.setItem('ttt_onboarded', '1');
   }
 
   // Close modal on overlay click
@@ -2579,6 +2678,16 @@
     } else {
       showToast(`✅ התזכורת נשמרה! נשלח ל-${channelText.replace(/📧|📱/g,'').trim()}`);
     }
+
+    // Send confirmation email
+    const userName = localStorage.getItem('ttt_user_name') || '';
+    if ((channel === 'email' || channel === 'both') && email) {
+      sendReminderConfirmEmail(userName, email, time);
+    }
+    // Schedule daily browser push notification
+    if (channel === 'push' || channel === 'both') {
+      scheduleDailyReminder(time, email);
+    }
   }
 
   function editReminder() {
@@ -2632,6 +2741,11 @@
     const re = document.getElementById('reminderEmail');
     if (rt) rt.value = time;
     if (re) re.value = email;
+
+    if (email && email !== 'המייל שלך') {
+      sendReminderConfirmEmail('', email, time);
+      scheduleDailyReminder(time, email);
+    }
   }
 
   function skipOnboarding() {
@@ -3099,6 +3213,371 @@
         if (langCode !== 'he') applyLang(langCode, null);
         else buildLangSwitcher('he');
       });
+  }
+
+  // ─── LOAD LESSON BY CATEGORY ────────────────────────────────
+  function loadLesson(cat) {
+    ttsStop();
+    lessonFinished = false;
+    const btn = document.getElementById('finishBtn');
+    if (btn) { btn.textContent = '✅ סיימתי ללמוד'; btn.style.background = ''; btn.style.cursor = ''; }
+
+    switch (cat) {
+
+      case 'emunah':
+        setLessonPage(
+          '🌟 אמונה וביטחון',
+          '״כי ה׳ אלוקיך מביאך אל ארץ טובה״ — אמונה ביומיום',
+          'הרב יגאל כהן שליט״א',
+          'מגדולי המחזקים בדורנו. מרצה ומחבר בנושאי אמונה, ביטחון ושמחת החיים. שיעוריו מגיעים למיליוני יהודים ברחבי העולם.',
+          'יכ',
+          '🎧 שיעור אמונה וביטחון — הרב יגאל כהן שליט״א',
+          `
+          <p>אחת השאלות הגדולות שכל אדם שואל בשקט ליבו היא: "אם ה׳ אוהב אותי — למה קשה לי?" התשובה, לפי ספר חובות הלבבות של רבנו בחיי אבן פקודה, נמצאת בהבנת מהות הביטחון. הביטחון האמיתי אינו אמונה שהכל יהיה קל — אלא ידיעה עמוקה שהכל מכוון לטובה.</p>
+
+          <div class="highlight">
+            ״הבוטח בה׳ — חופשי מכל דאגה, כי הוא יודע שהמנהיג יודע, יכול, וחפץ בטובתו״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— רבנו בחיי אבן פקודה, חובות הלבבות, שער הביטחון</span>
+          </div>
+
+          <p>רבנו בחיי מסביר שהביטחון בנוי על חמישה עמודות: (א) האמונה שהקב״ה רואה הכל, (ב) שביכולתו לעשות הכל, (ג) שהוא חפץ בטובת הנברא, (ד) שחסדו אינו פוסק לעולם, (ה) שהאדם זכאי לחסדו. כאשר חמשת יסודות אלה מושרשים בלב — הדאגה נעלמת.</p>
+
+          <p>הרב יגאל כהן מספר על סוחר שעסקיו קרסו ואיבד הכל בלילה אחד. חבריו ציפו לראות אדם שבור — ומצאו אדם שקט, שלו, כמעט מחייך. שאלוהו: ״איך אתה רגוע כך?״ ענה: ״כי אני יודע מי נותן ומי לוקח. הפסדתי כסף — לא איבדתי את מי שנתן לי אותו.״ זוהי עבודת הביטחון: לא לאבד את הקשר עם המקור, גם כשהצינור מתנתק.</p>
+
+          <div class="highlight">
+            ״כשאדם בוטח בה׳ באמת — הוא החופשי היחיד בעולם. כי כל שאר בני האדם עבדים לחששותיהם״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— הרב יגאל כהן שליט״א</span>
+          </div>
+
+          <p>שיטה פרקטית מהשיעור: בכל פעם שמחשבת דאגה עולה — במקום לדחות אותה, ענה לה בשאלה: ״מי דאג לי אתמול? מי דאג לי שנה שעברה?״ וכאשר הלב עונה ״הקב״ה״ — המחשבה הבאה שצריכה להיות: ״ומה השתנה עכשיו?״. דבר לא השתנה. הוא אותו אל.</p>
+
+          <p><strong>מעשה יומי:</strong> כשמשהו לא הולך כמו שרצית — עצור לשלוש שניות ואמר בלחש: ״גַּם זוֹ לְטוֹבָה״. שלוש פעמים. זה לא נאיביות — זו אמונה פעילה. ודבר מעניין קורה: הגוף מרפה, הנשימה מעמיקה, והמוח מתחיל לחפש את הטוב שבמצב במקום להתמקד בבעיה.</p>
+          `
+        );
+        break;
+
+      case 'parasha':
+        setLessonPage(
+          '📖 פרשת השבוע',
+          'פרשת בשלח — שירת הים ולקח הגאולה',
+          'הרב משה שפירא זצ״ל',
+          'אחד מגדולי המחשבה היהודית של הדור האחרון. ידוע בעומק ניתוח הפרשה ובחשיפת הרבדים הנסתרים בתורה. פטר בשנת תשע״ז.',
+          'מש',
+          '🎧 פרשת בשלח — הרב משה שפירא זצ״ל',
+          `
+          <p>פרשת בשלח היא פרשת הגאולה הגדולה — קריעת ים סוף ושירת הים. אך השאלה הידועה נשאלת: מדוע קרע ה׳ את הים? הרי עם ישראל כבר יצא ממצרים! מדרש המכילתא מביא את הסיפור המרתק על נחשון בן עמינדב.</p>
+
+          <div class="highlight">
+            ״לא קרע הים אלא לאחר שירד המים עד חוטמו של נחשון — כי ראה הקב״ה שיש אדם שמוכן לוותר על חייו על קידוש שמו״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— מכילתא דרבי ישמעאל, בשלח</span>
+          </div>
+
+          <p>נחשון בן עמינדב, נשיא שבט יהודה, קפץ לים כאשר כולם עמדו ובכו. המצרים רדפו מאחור, הים לפנים, ההרים מסביב. כולם בחרו להתפלל, לצעוק, לחכות לנס — ונחשון בחר ללכת. הוא לא ידע שהים ייקרע. הוא פשוט הלך.</p>
+
+          <p>לקח עמוק מהרב משה שפירא: שירת הים נאמרת בלשון עתיד — ״אָז יָשִׁיר מֹשֶׁה״. לא ״שר״ — אלא ״יָשִׁיר״. חז״ל לומדים מכאן רמז לתחיית המתים, אבל יש כאן גם לקח מעשי: השיר על הנס נאמר כאילו הוא עדיין מתרחש, עדיין חי, עדיין רלוונטי. כי נס שאתה זוכר ומחדש בלבך — הוא נס שממשיך לפעול.</p>
+
+          <div class="highlight">
+            ״כשאדם מרגיש תקוע ואין דרך — הנחשון שבפנימיותו שואל: מה הצעד הקטן שאני יכול לעשות עכשיו? וכשהוא עושה אותו — הים נקרע״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— הרב משה שפירא זצ״ל</span>
+          </div>
+
+          <p>ולמה ״שירת הים״ — ולא ״תפילת הים״? כי תפילה מבקשת. שירה מודה. ועם ישראל, גם בתוך הנס, כבר מודה — כי אמונתם כה שלמה שהעתיד המובטח כבר מורגש כהווה. זו מדרגת שירה.</p>
+
+          <p><strong>לעיון הלכה:</strong> קריאת פרשת בשלח מדי שנה אינה רק מנהג — היא מצווה דרבנן לחזק את אמונת הגאולה. ולכן אומרים בכל בוקר: ״אָז יָשִׁיר מֹשֶׁה״ — מדי יום, כאילו עכשיו. זכר ליציאת מצרים בכל בוקר וערב הוא מן התורה.</p>
+          `
+        );
+        break;
+
+      case 'mussar':
+        setLessonPage(
+          '📜 מוסר',
+          'מסילת ישרים — שער הזהירות',
+          'הרב חיים פרידלנדר זצ״ל',
+          'מחבר ספר "שפתי חיים" — ביאור מעמיק על מסילת ישרים. משגיח מוסר ישיבת פוניבז׳. פטר בשנת תשנ״ב.',
+          'חפ',
+          '🎧 שיעור מוסר — שער הזהירות',
+          `
+          <p>ספר מסילת ישרים, מאת הרמח״ל — רבי משה חיים לוצאטו — הוא אחד הספרים הנלמדים ביותר בעולם היהודי. הרמח״ל כתב אותו בגיל עשרים ושלוש, ועדיין נחשב לספר המוסר הגדול של כל הדורות. השער הראשון — שער הזהירות — מלמד כיצד להתעורר מהשינה הרוחנית.</p>
+
+          <div class="highlight">
+            ״הנה מה שצריך שיתבונן האדם ויחקור בכל עת ובכל שעה במעשיו — אם הם טובים אם לאו. כי האדם ההולך בלא הסתכלות ובדיקה — אי אפשר לו שלא יחטא״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— רמח״ל, מסילת ישרים פרק ב׳</span>
+          </div>
+
+          <p>הרמח״ל מסביר שרוב בני האדם ״ישנים״ — לא חוטאים בכוונה, אלא פשוט לא מתעניינים. הם הולכים בחיים ללא בדיקה פנימית, ללא שאלת ״האם מה שאני עושה מיישר את ה׳?״. ה״זהירות״ אינה פחד — היא ערנות. אדם זהיר הוא אדם שאינו מרשה לעצמו להיות ״אוטומט״.</p>
+
+          <p>הרב פרידלנדר מספר: רבי ישראל סלנטר, אבי תנועת המוסר, היה לומד מוסר בפני נר. כשהנר כבה — המשיך עד שהנר הבא הוכן. שאלוהו: ״למה חשוב כל כך ללמוד מוסר בחשכה?״ ענה: ״כי אדם יכול לשבת בחשכה ולא לדעת שהוא חושך. הלימוד מוסר מדליק את הנר הפנימי — כדי שנוכל לראות את עצמנו כפי שאנחנו באמת.״</p>
+
+          <div class="highlight">
+            ״לימוד המוסר אינו בשביל לקנות מידות טובות — אלא בשביל לראות מה יש לך כבר ומה חסר. הראייה עצמה היא שמתקנת״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— רבי ישראל סלנטר</span>
+          </div>
+
+          <p>שיטה מעשית שמציע הרב פרידלנדר: כל בוקר, לפני שאתה נוגע בטלפון — שאל שלוש שאלות: (א) מה יעדי לעשות היום? (ב) האם אופן הביצוע שלי מכבד אחרים? (ג) מה המידה שאני רוצה לחזק היום? חמש דקות בלבד — ואלו חמש הדקות שמשנות את שאר היום.</p>
+
+          <p><strong>קח מהשיעור:</strong> הזהירות לפי הרמח״ל אינה כיווץ אלא הרחבה. אדם זהיר הוא אדם שחי עם כל עצמו — לא רק עם הגוף, אלא גם עם הנשמה. ה״5 דקות של תורה״ הן בדיוק זה — חמש דקות שבהן אתה מחזיר את הנשמה לחיים.</p>
+          `
+        );
+        break;
+
+      case 'mishna':
+        setLessonPage(
+          '📚 משנה יומית',
+          'משנה אבות א׳ — שמאי אומר עשה תורתך קבע',
+          'הרב עדין שטיינזלץ זצ״ל',
+          'מגדולי מפרשי התלמוד של הדור. מתרגם התלמוד הבבלי לעברית מודרנית. נשיא ישיבת מתן בסתר. פטר בשנת תש״פ.',
+          'עש',
+          '🎧 לימוד משנה — הרב עדין שטיינזלץ זצ״ל',
+          `
+          <p>פרקי אבות הוא המסכת הנלמדת ביותר בתורה שבעל פה — כי היא נוגעת בחיים עצמם. לא בדינים ולא בטהרה — אלא באדם: מה הוא, מה ממנו מצופה, ומה עושה חיים של ערך. משנה ט״ו מפרק א׳ — דברי שמאי — היא אחת הנוקבות ביותר.</p>
+
+          <div class="highlight" style="font-size:1.1rem;font-family:'Frank Ruhl Libre',serif;">
+            ״שַׁמַּאי אוֹמֵר: עֲשֵׂה תוֹרָתְךָ קֶבַע. אֱמוֹר מְעַט וַעֲשֵׂה הַרְבֵּה. וֶהֱוֵי מְקַבֵּל אֶת כָּל הָאָדָם בְּסֵבֶר פָּנִים יָפוֹת״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— פרקי אבות, פרק א׳, משנה ט״ו</span>
+          </div>
+
+          <p>שלושה עקרונות בפסוק קצר. נתמקד בראשון: ״עֲשֵׂה תוֹרָתְךָ קֶבַע״. המילה ״קֶבַע״ היא המפתח. הרמב״ם בפירושו למשנה מסביר: קבע פירושו זמן שאינו זז. לא ״כשיהיה לי זמן״ — אלא שעה קבועה שלא זזה לשום דבר, מלבד פיקוח נפש.</p>
+
+          <p>הרב שטיינזלץ מדגיש: שמאי לא אומר ״תן לתורה את הזמן הטוב שלך״ — הוא אומר ״תן לתורה זמן שאינו ניתן לויתור״. ההבדל עצום. זמן שניתן לויתור — יוותר. תמיד יהיה משהו ״דחוף יותר״. רק קביעות אמיתית שורדת את לחץ החיים.</p>
+
+          <div class="highlight">
+            ״הוילנא גאון אמר: גם אדם שלומד רק דקה אחת בכל יום — אותה דקה מכוונת את כל שאר יומו. כי התורה היא מצפן, ואפילו מגע קצר עם המצפן — מיישר את ההליכה״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— הרב עדין שטיינזלץ זצ״ל</span>
+          </div>
+
+          <p>חישוב פשוט: אם תלמד משנה אחת בכל יום — בסוף השנה תסיים 365 משניות. זה יותר ממחצית סדר מועד. בשלוש שנים — סיימת את כל שישה סדרי משנה. זה לא דמיוני. זה אריתמטיקה.</p>
+
+          <p><strong>מעשה יומי:</strong> בחר מסכתא אחת — תתחיל עם ״ברכות״ (63 משניות) או ״אבות״ (66 משניות) — וקבע זמן. לא ״כשיהיה לי זמן״. עכשיו — פתח יומן ורשום: ״כל יום ב-[שעה X] — משנה אחת״. בסוף היום הזה, עשה את הקביעות. שמאי יהיה גאה.</p>
+          `
+        );
+        break;
+
+      case 'gemara':
+        setLessonPage(
+          '📖 גמרא',
+          'ברכות דף ז׳ — שלושת בקשות משה רבנו',
+          'הרב אברהם סתיו שליט״א',
+          'ראש כולל ומרצה בכיר לגמרא ולהלכה. מוכר בגישתו הנגישה ללימוד גמרא לכל רמה.',
+          'אס',
+          '🎧 גמרא ב-5 דקות — הרב אברהם סתיו שליט״א',
+          `
+          <p>מסכת ברכות היא המסכת הראשונה בש״ס — ולא בכדי. היא פותחת בתפילה, בהכרת הנוכחות האלוקית, ובשאלה: מה זה להיות קשור עם ה׳? דף ז׳ עמוד א׳ מביא את אחד הסוגיות העמוקות ביותר בגמרא.</p>
+
+          <div class="highlight" style="font-family:'Frank Ruhl Libre',serif;">
+            ״אָמַר רַב יְהוּדָה אָמַר רַב: שְׁלֹשָׁה דְּבָרִים בִּיקֵּשׁ מֹשֶׁה מִלִּפְנֵי הַקָּדוֹשׁ בָּרוּךְ הוּא, וְנִתְּנוּ לוֹ:
+            בִּיקֵּשׁ שֶׁתִּשְׁרֶה שְׁכִינָה עַל יִשְׂרָאֵל — וְנִתְּנָה לוֹ.
+            בִּיקֵּשׁ שֶׁלֹּא תִּשְׁרֶה שְׁכִינָה עַל עוֹבְדֵי כּוֹכָבִים — וְנִתְּנָה לוֹ.
+            בִּיקֵּשׁ לֵידַע דַּרְכֵי הַקָּדוֹשׁ בָּרוּךְ הוּא — וְנִתְּנוּ לוֹ״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— תלמוד בבלי, ברכות ז׳ ע״א</span>
+          </div>
+
+          <p>שלוש בקשות. הגמרא מתמקדת בבקשה השלישית: ״לידע דרכי הקדוש ברוך הוא״. משה שאל: מדוע יש צדיק ורע לו? מדוע יש רשע וטוב לו? זו שאלת כל הדורות — שאלת הצדק האלוקי. ומה ענה ה׳?</p>
+
+          <p>הגמרא מביאה שה׳ ענה: ״אֲנִי אַחוֹן אֶת אֲשֶׁר אָחוֹן״ — אני חונן את מי שאני רוצה, גם אם אינו ראוי. כלומר: ה׳ לא נתן תשובה פרטנית לשאלת הסבל — הוא נתן תשובה על עקרון ההנהגה. חסד ה׳ אינו מחושב לפי חשבון אנושי. הוא נמצא מעבר להיגיון שלנו.</p>
+
+          <div class="highlight">
+            ״הגמרא אינה מתחמקת מהשאלה הקשה — היא מתמודדת איתה ישירות. ומי שלומד בגמרא כיצד משה שאל ולא קיבל תשובה שלמה — לומד שגם הוא רשאי לשאול, ואפילו לא לקבל תשובה. השאלה עצמה היא עבודת ה׳״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— הרב אברהם סתיו שליט״א</span>
+          </div>
+
+          <p>שיעור נוסף מהגמרא הזו: הפסוק ״אַרְאֶנּוּ בְּאָחוֹר וּפָנַי לֹא יֵרָאוּ״ — ה׳ אמר למשה שיוכל לראות את ״אחוריו״ ולא פניו. חז״ל מפרשים: האדם לא מבין את ההנהגה בזמן אמת — אלא רק בדיעבד. כמו מסע ארוך שמובן רק כשמסתכלים אחורה.</p>
+
+          <p><strong>סיכום:</strong> דף ז׳ מלמד שגדלות רוחנית אינה ״לדעת את כל התשובות״ — אלא לשאול את השאלות הנכונות ולהמשיך ללכת גם בלי תשובה. גם משה לא קיבל הכל. וגם הוא המשיך ללמד תורה עד יומו האחרון.</p>
+          `
+        );
+        break;
+
+      case 'tehillim':
+        setLessonPage(
+          '🙏 תהילים',
+          'מזמור כ״ג — ה׳ רועי לא אחסר',
+          'הרב שלום ארוש שליט״א',
+          'מחבר ספר "גן נעול" ו"בגן האמונה". מנהל ישיבת חוט של חסד. ידוע בגישתו לחינוך ולחיזוק הנפש.',
+          'שא',
+          '🎧 עומק מזמור כ״ג — הרב שלום ארוש שליט״א',
+          `
+          <p>מזמור כ״ג הוא מהמזמורים האהובים ביותר בתנ״ך — ולא רק ביהדות. מיליוני אנשים ברחבי העולם אומרים אותו בשעות של פחד, אובדן, וחושך. אך הפירוש העמוק שלו עשיר הרבה יותר ממה שנדמה לכאורה.</p>
+
+          <div class="highlight" style="font-family:'Frank Ruhl Libre',serif;font-size:1.1rem;">
+            ״ה׳ רֹעִי לֹא אֶחְסָר. בִּנְאוֹת דֶּשֶׁא יַרְבִּיצֵנִי עַל מֵי מְנֻחוֹת יְנַהֲלֵנִי.
+            נַפְשִׁי יְשׁוֹבֵב יַנְחֵנִי בְמַעְגְּלֵי צֶדֶק לְמַעַן שְׁמוֹ.
+            גַּם כִּי אֵלֵךְ בְּגֵיא צַלְמָוֶת לֹא אִירָא רָע כִּי אַתָּה עִמָּדִי״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— תהילים כ״ג, א׳-ד׳</span>
+          </div>
+
+          <p>הרב ארוש מדגיש: דוד המלך לא אמר ״ה׳ הוא רועה״ — הוא אמר ״ה׳ רֹעִי״ — הרועה שלי. ביחס אישי, פרטי. לא רועה של כולם — רועה שלי. כאשר אדם מכיר שהשגחת ה׳ היא אישית ולא כללית — כל חייו משתנים.</p>
+
+          <p>על המילים ״גַּם כִּי אֵלֵךְ בְּגֵיא צַלְמָוֶת״ — הרב מסביר: ״גַּם כִּי״ — אפילו כי. לא ״אם״ — אלא ״גם כי״. כי הולך בגיא צלמוות זה לא ספק. זה ודאות. הסבל הוא חלק מהחיים. הפסוק אינו מבטיח שלא תהיה חשכה — הוא מבטיח שלא תהיה לבד בתוכה.</p>
+
+          <div class="highlight">
+            ״שִׁבְטְךָ וּמִשְׁעַנְתֶּךָ הֵמָּה יְנַחֲמֻנִי״ — השבט הוא לתיקון, המשענת לתמיכה. ושניהם מנחמים. כי אפילו היסורים הם ביד הרועה, ולא ביד אחר״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— מלבי״ם על תהילים כ״ג</span>
+          </div>
+
+          <p>הפסוק האחרון: ״אַךְ טוֹב וָחֶסֶד יִרְדְּפוּנִי כָּל יְמֵי חַיָּי״ — הטוב רודף אחרי. לא אני רודף אחרי הטוב — הטוב רודף אחרי. זו תמונת עולם הפוכה: אנחנו חושבים שצריך לרוץ ולצוד את האושר, אבל תהילים אומר — אם אתה הולך בדרך הישרה, האושר עצמו רודף אחריך.</p>
+
+          <p><strong>מעשה יומי:</strong> כשאתה בפחד, בדאגה, בחושך — אמור את מזמור כ״ג לאט, מילה מילה, מחשבה מחשבה. לא לברוח מהפחד — אלא להזמין את ה׳ לתוכו.</p>
+          `
+        );
+        break;
+
+      case 'halacha':
+        setLessonPage(
+          '🕯️ הלכה יומית',
+          'הלכות ברכות — ברכת הנהנין',
+          'הרב ישראל מאיר לאו שליט״א',
+          'הרב הראשי לישראל לשעבר. מחבר "יחיה ישראל" על הלכות שבת ומועד. ניצול שואה וסמל של תקומה יהודית.',
+          'ימ',
+          '🎧 הלכה יומית — הרב ישראל מאיר לאו שליט״א',
+          `
+          <p>הלכות ברכות הן מהנפוצות ביותר בחיי היומיום — ולצערנו מהנפוצות ביותר בטעויות. בכל יום אנו אוכלים, שותים, מריחים, ורואים נסים — וכל אחת מהנאות אלה מלווה בברכה. הרב לאו מסביר: ברכה אינה ״קסם לפני אכילה״ — היא הצהרת בעלות.</p>
+
+          <div class="highlight">
+            ״כל הנהנה מן העולם הזה בלא ברכה — כאילו מעל בקדשי שמים, שנאמר: לה׳ הארץ ומלואה״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— תלמוד בבלי, ברכות ל״ה ע״א, ושולחן ערוך אורח חיים ר״ב</span>
+          </div>
+
+          <p>העיקרון: כל מה שקיים בעולם שייך לה׳. אנחנו ״לוקחים רשות״ לפני כל הנאה. הברכה היא ה״רשות״ — הכרה שאין לי בעלות מוחלטת על מה שאני אוכל; אני מקבל אותו מהבורא.</p>
+
+          <p>לוח ברכות בסיסי:</p>
+
+          <div style="background:var(--parchment);border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:1.2rem 1.5rem;margin:1rem 0;font-family:'Frank Ruhl Libre',serif;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 2rem;font-size:1rem;line-height:2;">
+              <span><strong>לחם</strong> → המוציא לחם מן הארץ</span>
+              <span><strong>עוגה/עוגיות</strong> → בורא מיני מזונות</span>
+              <span><strong>יין</strong> → בורא פרי הגפן</span>
+              <span><strong>פירות עץ</strong> → בורא פרי העץ</span>
+              <span><strong>ירקות</strong> → בורא פרי האדמה</span>
+              <span><strong>מים/מיצים</strong> → שהכל נהיה בדברו</span>
+            </div>
+          </div>
+
+          <div class="highlight">
+            ״הרב עקיבא איגר נשאל: מהי הברכה החשובה ביותר? ענה: הברכה שנאמרת עם כוונה. כי ברכה בלי כוונה — כמו מכתב בלי חתימה״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— סיפורי גדולי ישראל</span>
+          </div>
+
+          <p>הלכה מעשית: המברך צריך לאחוז את המאכל ביד ימינו, לכוון לשם ה׳, ולאמר את הברכה לפני שמכניס לפה. אם בירך ואכל בבת אחת — יצא בדיעבד. אם אכל לפני הברכה — חייב ברכה אחרונה, אבל ברכה ראשונה כבר לא ניתן לתקן.</p>
+
+          <p><strong>מעשה יומי:</strong> בארוחה הבאה, לפני שאוכל — עצור שנייה. תחשוב: ״מי הכין את האוכל הזה?״ לא הטבח — הבורא. אמור את הברכה לאט, עם מחשבה. זה לא לוקח יותר מ-10 שניות — וזה הופך את הארוחה לפעולה קדושה.</p>
+          `
+        );
+        break;
+
+      case 'tzadikim':
+        loadBabaSaliLesson();
+        navigate('lesson');
+        return;
+
+      case 'shalom_bayit':
+        setLessonPage(
+          '🏠 שלום בית',
+          'סוד השלום בבית — לשמוע ולא רק לשמע',
+          'הרב זמיר כהן שליט״א',
+          'מייסד ארגון הידברות. מחבר סדרת ספרים על חיי הזוגיות. מרצה מבוקש בנושאי שלום בית וחינוך.',
+          'זכ',
+          '🎧 שלום בית — הרב זמיר כהן שליט״א',
+          `
+          <p>שלום בית הוא אחת מהמצוות הגדולות שבתורה — ואחד מהנושאים הפחות נלמדים. רוב האנשים חושבים שהם יודעים כיצד להתנהג עם בני זוגם — אך נתונים מראים שקונפליקטים זוגיים הם אחד הגורמים הגדולים ביותר לסבל אנושי. מה אומרת התורה?</p>
+
+          <div class="highlight">
+            ״האוהב את אשתו כגופו והמכבדה יותר מגופו — עליו הכתוב אומר: וידעת כי שלום אהלך״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— תלמוד בבלי, יבמות ס״ב ע״ב</span>
+          </div>
+
+          <p>שימו לב לנוסחה: אהוב כגופך — וכבד יותר מגופך. האהבה היא שוויון; הכבוד הוא עדיפות. כשאדם אוהב את בן זוגו ״כגופו״ — הוא יודע שמה שכואב לו כואב לשני. וכשהוא מכבד יותר — הוא מוכן לוותר על הצורך שלו למען הצורך של האחר.</p>
+
+          <p>הרב כהן מציין: הגורם מספר אחד לריב בזוגיות הוא לא חוסר אהבה — אלא חוסר הקשבה. ״שמעתי מה שאמרת״ שונה מ״הקשבתי לך״. הקשבה אמיתית פירושה: לשים הצד את ה-agenda שלי לרגע, ולנסות להבין מה השני מרגיש — לא מה הוא אומר.</p>
+
+          <div class="highlight">
+            ״כל ריב בין בני זוג מתחיל ברגע שאחד מהם הפסיק להאזין. ומתחיל להסביר, לתקן, ולנצח — במקום להבין״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— הרב שלמה וולבה זצ״ל, עלי שור</span>
+          </div>
+
+          <p>סיפור: החפץ חיים היה נוהג לקדם את פני אשתו בכניסתו לבית ב-״שלום עליכם״, כאילו היא מלכה. שאלוהו: ״הרי בן שמנים אתה — ועדיין?״ ענה: ״ובגלל שאני בן שמנים — מה שעמד בפניי כל חיי, אני עדיין רוצה לכבד.״</p>
+
+          <p><strong>כלל הזהב — שיטה מעשית:</strong> כשמתחיל ויכוח, לפני שאתה עונה — שאל את עצמך: ״מה הצורך שלו/שלה עכשיו?״ לא מה הוא/היא אומרים — אלא מה הם צריכים. הם צריכים להרגיש נשמעים? מוערכים? מוגנים? כשאתה עונה לצורך — לא לאמירה — הריב נפסק לרוב מאליו.</p>
+          `
+        );
+        break;
+
+      case 'parnasa':
+        setLessonPage(
+          '💰 פרנסה ותורה',
+          'פרנסה וביטחון — ״ברכה בששת ימי המעשה״',
+          'הרב בן ציון מוצפי שליט״א',
+          'מקובל ופוסק הלכה בכיר. ידוע בשיעוריו על פרנסה, ברכה, וכח התורה בחיי העמל. מרן מגדולי יוצאי עיראק.',
+          'בצ',
+          '🎧 פרנסה ותורה — הרב בן ציון מוצפי שליט״א',
+          `
+          <p>שאלה שרבים שואלים: אם אני בוטח בה׳ — האם אני צריך לעבוד? התשובה ברורה מהתורה — כן. אבל האופן שבו עובדים, והמשמעות שנותנים לעבודה, משנה הכל. תורת הפרנסה מלמדת לא רק ״איך להרוויח״ אלא ״למה להרוויח״.</p>
+
+          <div class="highlight">
+            ״יָפֶה תַּלְמוּד תּוֹרָה עִם דֶּרֶךְ אֶרֶץ, שֶׁיְּגִיעַת שְׁנֵיהֶם מַשְׁכַּחַת עָוֹן״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— פרקי אבות, פרק ב׳, משנה ב׳ — רבן גמליאל</span>
+          </div>
+
+          <p>התורה אינה מגנה את הפרנסה — היא מברכת אותה. הרמב״ם בהלכות דעות (פרק ה׳) פוסק שתלמיד חכם צריך מקצוע — לא רק כדי לחיות, אלא כי עבודה מכבדת. ״וּגְנוֹב דַּעַת הַבְּרִיּוֹת אֲפִלּוּ בִּדְבָרִים״ — ואפילו במסחר, יש חיוב של אמת.</p>
+
+          <p>הרב מוצפי מסביר: ״בְּרָכָה לֹא שׁוֹרָה אֶלָּא עַל דָּבָר הַסָּמוּי מִן הָעַיִן״ (תענית ח׳ ע״ב). הברכה שורה על ״הסמוי״ — כלומר על ה-effort, על ההשתדלות. אתה צריך לשים את הכלים — ואז הברכה ממלאת אותם. אתה לא צריך לדעת מאיפה תבוא הפרנסה — רק לעשות את ה-hishtadlut שלך בנאמנות.</p>
+
+          <div class="highlight">
+            ״עֲשֵׂה שַׁבַּתְּךָ חֹל וְאַל תִּצְטָרֵךְ לִבְרִיּוֹת״ — יש כח בעבודה שנעשית בכנות. אפילו בשבת אחת שהופכת לחול כדי לא להצטרך לאחרים — יש בה כבוד
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— תלמוד בבלי, פסחים קי״ב ע״א</span>
+          </div>
+
+          <p>שלושה עקרונות של פרנסה בדרך תורה: (א) <strong>אמת</strong> — אין לרמות, לא בכסף ולא בדברים. ״מִדָּה, מִשְׁקָל, מִשּׁוּרָה״ — הכל בדיוק. (ב) <strong>יושר</strong> — לתת שוות ערך מלא למה שאתה לוקח. (ג) <strong>ברכה</strong> — להכיר שהפרנסה באה מה׳, לא רק מהמאמץ שלך.</p>
+
+          <p><strong>מעשה יומי:</strong> לפני כל החלטה עסקית גדולה — שאל שתי שאלות: ״האם זה אמת?״ ו-״האם זה ישר?״. אם שתי התשובות ״כן״ — לך קדימה בביטחון. אם אחת מהן ״לא״ — עצור.</p>
+          `
+        );
+        break;
+
+      case 'chassidut':
+        setLessonPage(
+          '✨ חסידות',
+          '״ואהבת לרעך כמוך — זה כלל גדול בתורה״ — יסוד החסידות',
+          'הרמנחם מענדל שניאורסאהן — הרבי מלובביץ׳ זצ״ל',
+          'הרבי מלובביץ׳ השביעי. אחד מגדולי מנהיגי ישראל במאה העשרים. הפיץ את שיטת חב״ד בכל קצות תבל. פטר בשנת תשנ״ד.',
+          'רמ',
+          '🎧 שיעור חסידות — יסוד האהבה',
+          `
+          <p>הבעל שם טוב — רבי ישראל בן אליעזר — ייסד את תנועת החסידות במאה ה-18 עם מסר מהפכני: ה׳ נמצא בכל מקום. לא רק בבית הכנסת ולא רק בלמדנות — אלא בשוק, בשדה, בשיחה פשוטה, בשמחה, ובכל ניצוץ של חיים. זה שינה את עולם היהדות לנצח.</p>
+
+          <div class="highlight">
+            ״בְּכָל דְּרָכֶיךָ דָּעֵהוּ — בְּכָל מַה שֶׁאַתָּה עוֹשֶׂה, אֲפִלּוּ הַדְּבָרִים הַחוּלִּיִּים שֶׁבַּיּוֹם-יוֹם, אֶפְשָׁר לִמְצֹא בָּהֶם אֶת ה׳״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— תולדות יעקב יוסף, בשם הבעל שם טוב</span>
+          </div>
+
+          <p>האדמו״ר הזקן — רבי שניאור זלמן מלאדי, מחבר ספר התניא — מסביר בפרק ל״ב: הדרך העמוקה ביותר לאהוב את ה׳ היא לאהוב כל יהודי. מדוע? כי כל נשמה יהודית היא ״חֵלֶק אֱלֹקַּה מִמַּעַל״ — פיסה מה׳ ממש. כשאתה אוהב יהודי — אתה אוהב חלק מה׳.</p>
+
+          <p>הבעל שם טוב פעם אמר שלמד את משמעות האהבה ממראה שראה: שני איכרים שכרים שישבו ועטפו זה את זה בחיבוק — ללא שום סיבה, ללא חשבון, ללא תנאים. אמר: ״כך צריך לאהוב כל יהודי.״</p>
+
+          <div class="highlight">
+            ״כשאתה רואה יהודי — ראה קודם כל את ניצוץ האלוקות שבו. לא מה הוא עושה, לא מה הוא לא עושה — אלא מה הוא: חלק מה׳ חיים וקיים״
+            <span style="font-size:0.82rem;display:block;margin-top:6px;opacity:0.75;">— הרבי מלובביץ׳ זצ״ל</span>
+          </div>
+
+          <p>הרבי מלובביץ׳ לימד: אמה של אחדות ישראל אינה ״סבלנות״ — אמה היא ״ראייה״. כשאתה מסתכל על אדם אחר ורואה בו ניצוץ אלוקי, גם אם הוא שונה ממך לחלוטין — אז אתה עוסק בחסידות. לא בלבוש, לא בחיצוניות — בפנימיות.</p>
+
+          <p><strong>מעשה יומי:</strong> היום, בחר אדם אחד שקשה לך איתו. לא שונאך — פשוט מישהו שמאתגר אותך. ועכשיו — מצא דבר אחד לאהוב בו. דבר אחד. ניצוץ אחד. זה לא הפסד — זו החסידות בפעולה.</p>
+          `
+        );
+        break;
+
+      default:
+        setLessonPage(
+          '📖 שיעור תורה',
+          'שיעור תורה יומי',
+          'עת לתורה',
+          'לימוד תורה יומי — 5 דקות שמשנות חיים',
+          'עת',
+          '🎧 שמע שיעור',
+          '<p>בחר קטגוריה מהרשימה ללמוד שיעור מותאם.</p>'
+        );
+    }
+
+    navigate('lesson');
   }
 
   // Run on load
