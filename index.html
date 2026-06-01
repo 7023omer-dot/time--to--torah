@@ -1208,7 +1208,7 @@
     }
     .stat-card .label { font-size: 0.78rem; color: var(--stone); }
 
-    .achievements-section, .subscription-section, .favorites-section {
+    .achievements-section, .subscription-section, .favorites-section, .reminder-section {
       background: var(--white);
       border-radius: var(--radius);
       padding: 1.75rem;
@@ -1295,6 +1295,28 @@
       margin-bottom: 5px;
     }
     .progress-label .count { font-weight: 700; color: var(--gold-dark); }
+    /* Reminder section */
+    .reminder-desc { font-size:0.9rem; color:var(--stone); margin-bottom:1rem; }
+    .reminder-card { background:var(--parchment); border:1px solid rgba(201,168,76,0.25); border-radius:12px; padding:1.2rem 1.4rem; }
+    .reminder-toggle-row { display:flex; justify-content:space-between; align-items:center; }
+    .reminder-label { font-weight:700; font-size:0.95rem; color:var(--ink); }
+    .reminder-label-sm { font-size:0.85rem; color:var(--stone); display:block; margin-bottom:0.4rem; }
+    .reminder-time-row, .reminder-channel-row { margin-bottom:1rem; }
+    .time-picker { border:1px solid rgba(201,168,76,0.4); border-radius:8px; padding:8px 12px; font-size:1rem; background:white; color:var(--ink); font-family:'Heebo',sans-serif; width:140px; direction:ltr; }
+    .channel-options { display:flex; gap:10px; flex-wrap:wrap; }
+    .channel-option { display:flex; align-items:center; gap:6px; background:white; border:1.5px solid rgba(201,168,76,0.3); border-radius:10px; padding:8px 14px; cursor:pointer; font-size:0.88rem; font-weight:600; transition:all 0.2s; }
+    .channel-option:has(input:checked) { border-color:var(--gold); background:rgba(201,168,76,0.1); }
+    .channel-icon { font-size:1.1rem; }
+    .reminder-email-row { margin-bottom:0.5rem; }
+    .reminder-email-input { width:100%; border:1px solid rgba(201,168,76,0.4); border-radius:8px; padding:10px 14px; font-size:0.92rem; font-family:'Heebo',sans-serif; background:white; color:var(--ink); box-sizing:border-box; direction:ltr; }
+    /* Toggle switch */
+    .toggle-switch { position:relative; display:inline-block; width:50px; height:26px; }
+    .toggle-switch input { opacity:0; width:0; height:0; }
+    .toggle-slider { position:absolute; cursor:pointer; inset:0; background:#ccc; border-radius:26px; transition:.3s; }
+    .toggle-slider:before { position:absolute; content:""; height:20px; width:20px; right:3px; bottom:3px; background:white; border-radius:50%; transition:.3s; }
+    .toggle-switch input:checked + .toggle-slider { background:var(--gold); }
+    .toggle-switch input:checked + .toggle-slider:before { transform:translateX(-24px); }
+
     .progress-bar-track {
       background: rgba(201,168,76,0.12);
       border-radius: 6px;
@@ -2056,6 +2078,65 @@
         </div>
       </div>
 
+      <!-- REMINDER SETTINGS -->
+      <div class="reminder-section">
+        <div class="section-heading">🔔 תזכורת יומית</div>
+        <p class="reminder-desc">קבל תזכורת כל יום בשעה שתבחר — כדי לא לשכוח את 5 הדקות שלך</p>
+
+        <div class="reminder-card" id="reminderCard">
+          <div class="reminder-toggle-row">
+            <span class="reminder-label">הפעל תזכורת יומית</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="reminderToggle" onchange="toggleReminder(this.checked)">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div id="reminderOptions" style="display:none;margin-top:1.2rem;">
+            <div class="reminder-time-row">
+              <label class="reminder-label-sm">⏰ שעת התזכורת</label>
+              <input type="time" id="reminderTime" value="07:00" class="time-picker">
+            </div>
+
+            <div class="reminder-channel-row">
+              <label class="reminder-label-sm">📨 אופן התזכורת</label>
+              <div class="channel-options">
+                <label class="channel-option" id="chanEmail">
+                  <input type="radio" name="channel" value="email" checked onchange="selectChannel('email')">
+                  <span class="channel-icon">✉️</span>
+                  <span>מייל</span>
+                </label>
+                <label class="channel-option" id="chanPush">
+                  <input type="radio" name="channel" value="push" onchange="selectChannel('push')">
+                  <span class="channel-icon">📱</span>
+                  <span>פאלפון</span>
+                </label>
+                <label class="channel-option" id="chanBoth">
+                  <input type="radio" name="channel" value="both" onchange="selectChannel('both')">
+                  <span class="channel-icon">🔔</span>
+                  <span>שניהם</span>
+                </label>
+              </div>
+            </div>
+
+            <div id="emailInputRow" class="reminder-email-row">
+              <input type="email" id="reminderEmail" placeholder="הכנס כתובת מייל" class="reminder-email-input" value="david@example.com">
+            </div>
+
+            <button class="btn-primary btn-sm" style="width:100%;margin-top:1rem;" onclick="saveReminder()">
+              💾 שמור תזכורת
+            </button>
+          </div>
+
+          <div id="reminderSaved" style="display:none;text-align:center;padding:1rem 0;">
+            <div style="font-size:2rem;margin-bottom:0.5rem;">✅</div>
+            <div style="font-weight:700;color:var(--ink);">התזכורת נשמרה!</div>
+            <div id="reminderSavedText" style="font-size:0.88rem;color:var(--stone);margin-top:0.3rem;"></div>
+            <button class="btn-outline btn-sm" style="margin-top:0.8rem;" onclick="editReminder()">✏️ עריכה</button>
+          </div>
+        </div>
+      </div>
+
       <!-- FAVORITE CATEGORIES -->
       <div class="favorites-section">
         <div class="section-heading">❤️ הקטגוריות המועדפות</div>
@@ -2359,6 +2440,98 @@
     }
   }
 
+  // ─── REMINDER SYSTEM ────────────────────────────────────────
+  function toggleReminder(on) {
+    document.getElementById('reminderOptions').style.display = on ? 'block' : 'none';
+    document.getElementById('reminderSaved').style.display = 'none';
+    if (on) {
+      // Request push permission when enabled
+      if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+  }
+
+  function selectChannel(ch) {
+    document.getElementById('emailInputRow').style.display = (ch === 'push') ? 'none' : 'block';
+  }
+
+  function saveReminder() {
+    const time = document.getElementById('reminderTime').value;
+    const channel = document.querySelector('input[name="channel"]:checked').value;
+    const email = document.getElementById('reminderEmail').value;
+    const [h, m] = time.split(':');
+    const hour = parseInt(h);
+    const ampm = hour < 12 ? 'בבוקר' : hour < 17 ? 'בצהריים' : 'בערב';
+    const channelText = { email: `📧 למייל: ${email}`, push: '📱 לפאלפון', both: `📧 למייל ו-📱 לפאלפון` }[channel];
+
+    document.getElementById('reminderSavedText').innerHTML =
+      `כל יום בשעה <strong>${time}</strong> ${ampm}<br>${channelText}`;
+    document.getElementById('reminderOptions').style.display = 'none';
+    document.getElementById('reminderSaved').style.display = 'block';
+
+    // Schedule browser notification as demo
+    if (channel !== 'email' && 'Notification' in window && Notification.permission === 'granted') {
+      showToast(`✅ התזכורת הוגדרה לשעה ${time} ${ampm}`);
+    } else {
+      showToast(`✅ התזכורת נשמרה! נשלח ל-${channelText.replace(/📧|📱/g,'').trim()}`);
+    }
+  }
+
+  function editReminder() {
+    document.getElementById('reminderSaved').style.display = 'none';
+    document.getElementById('reminderOptions').style.display = 'block';
+  }
+
+  // ─── ONBOARDING POPUP (first visit) ─────────────────────────
+  function showOnboardingIfNew() {
+    if (localStorage.getItem('ttt_onboarded')) return;
+    setTimeout(() => {
+      const popup = document.createElement('div');
+      popup.id = 'onboardingPopup';
+      popup.style.cssText = 'position:fixed;inset:0;background:rgba(26,18,8,0.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+      popup.innerHTML = `
+        <div style="background:var(--parchment);border-radius:20px;max-width:420px;width:100%;padding:2rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.4);position:relative;">
+          <div style="font-size:2.5rem;margin-bottom:0.5rem;">🕎</div>
+          <h2 style="font-family:'Frank Ruhl Libre',serif;font-size:1.6rem;color:var(--ink);margin-bottom:0.5rem;">ברוך הבא ל-Time to Torah</h2>
+          <p style="color:var(--stone);font-size:0.92rem;line-height:1.7;margin-bottom:1.5rem;">
+            5 דקות תורה ביום — לכל יהודי, בכל מקום בעולם.<br>
+            רוצה שנשלח לך תזכורת יומית?
+          </p>
+          <div style="background:white;border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:1rem;margin-bottom:1rem;text-align:right;">
+            <div style="font-size:0.85rem;color:var(--stone);margin-bottom:0.5rem;">⏰ באיזו שעה נשלח לך?</div>
+            <input type="time" id="onboardTime" value="07:30" style="border:1px solid rgba(201,168,76,0.4);border-radius:8px;padding:8px 12px;font-size:1rem;direction:ltr;width:130px;">
+            <div style="font-size:0.85rem;color:var(--stone);margin:0.8rem 0 0.5rem;">📧 לאיזה מייל?</div>
+            <input type="email" id="onboardEmail" placeholder="your@email.com" style="width:100%;border:1px solid rgba(201,168,76,0.4);border-radius:8px;padding:10px 12px;font-size:0.92rem;direction:ltr;box-sizing:border-box;">
+          </div>
+          <button onclick="saveOnboarding()" class="btn-primary" style="width:100%;margin-bottom:0.7rem;">🔔 כן, שלח לי כל יום!</button>
+          <button onclick="skipOnboarding()" style="background:none;border:none;color:var(--stone);font-size:0.85rem;cursor:pointer;font-family:'Heebo',sans-serif;">אולי אחר כך</button>
+        </div>
+      `;
+      document.body.appendChild(popup);
+    }, 4000);
+  }
+
+  function saveOnboarding() {
+    const time = document.getElementById('onboardTime').value;
+    const email = document.getElementById('onboardEmail').value || 'המייל שלך';
+    localStorage.setItem('ttt_onboarded', '1');
+    localStorage.setItem('ttt_reminder_time', time);
+    localStorage.setItem('ttt_reminder_email', email);
+    document.getElementById('onboardingPopup').remove();
+    showToast(`✅ מעולה! נשלח לך שיעור כל יום בשעה ${time}`);
+    // Pre-fill profile reminder
+    const rt = document.getElementById('reminderTime');
+    const re = document.getElementById('reminderEmail');
+    if (rt) rt.value = time;
+    if (re) re.value = email;
+  }
+
+  function skipOnboarding() {
+    localStorage.setItem('ttt_onboarded', 'skipped');
+    document.getElementById('onboardingPopup').remove();
+  }
+
   function earnMazke() {
     const el = document.getElementById('ach-mazke');
     if (el) {
@@ -2552,6 +2725,7 @@
   window.addEventListener('load', () => {
     detectAndApply();
     fetchLiveRates();
+    showOnboardingIfNew();
   });
 </script>
 </body>
