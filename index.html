@@ -859,6 +859,29 @@
       border: 1px solid rgba(201,168,76,0.2);
       margin: 1.5rem 0;
     }
+    /* TTS Box */
+    .tts-box { background: linear-gradient(135deg, #1A1208, #2d1f0a); border-radius: 16px; padding: 1.5rem; margin: 1.5rem 0; color: white; }
+    .tts-header { margin-bottom: 1.2rem; }
+    .tts-title { font-family: 'Frank Ruhl Libre', serif; font-size: 1.15rem; font-weight: 700; color: var(--gold-light); display: block; margin-bottom: 0.25rem; }
+    .tts-subtitle { font-size: 0.82rem; color: rgba(255,255,255,0.55); }
+    .tts-controls { display: flex; gap: 10px; margin-bottom: 1rem; }
+    .tts-btn { border: none; border-radius: 25px; padding: 10px 22px; font-family: 'Heebo', sans-serif; font-size: 0.92rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .tts-play { background: var(--gold); color: var(--ink); }
+    .tts-play:hover { background: var(--gold-light); }
+    .tts-play.playing { background: #E8A020; }
+    .tts-stop { background: rgba(255,255,255,0.12); color: white; }
+    .tts-stop:hover { background: rgba(255,255,255,0.2); }
+    .tts-progress-row { margin-bottom: 1rem; }
+    .tts-progress-bar { background: rgba(255,255,255,0.15); border-radius: 10px; height: 6px; margin-bottom: 0.4rem; overflow: hidden; }
+    .tts-progress-fill { height: 100%; background: var(--gold); border-radius: 10px; width: 0%; transition: width 0.5s; }
+    .tts-progress-label { font-size: 0.78rem; color: rgba(255,255,255,0.5); }
+    .tts-settings { display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; flex-wrap: wrap; }
+    .tts-lang-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tts-setting-label { font-size: 0.82rem; color: rgba(255,255,255,0.6); white-space: nowrap; }
+    .tts-speed-slider { flex: 1; accent-color: var(--gold); min-width: 80px; max-width: 140px; cursor: pointer; }
+    .tts-speed-val { font-size: 0.82rem; color: var(--gold-light); font-weight: 700; min-width: 28px; }
+    .tts-lang-select { background: rgba(255,255,255,0.1); border: 1px solid rgba(201,168,76,0.4); color: white; border-radius: 8px; padding: 5px 10px; font-size: 0.85rem; font-family: 'Heebo', sans-serif; cursor: pointer; }
+    .tts-tip { font-size: 0.78rem; color: rgba(255,255,255,0.4); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.8rem; margin-top: 0.3rem; }
 
     .audio-label {
       font-size: 0.85rem;
@@ -1866,6 +1889,52 @@
         </audio>
       </div>
 
+      <!-- TTS READER -->
+      <div class="tts-box" id="ttsBox">
+        <div class="tts-header">
+          <span class="tts-title">🎙️ הקראה בקול</span>
+          <span class="tts-subtitle">האזן לשיעור בדרך — בלי להסתכל במסך</span>
+        </div>
+
+        <div class="tts-controls">
+          <button class="tts-btn tts-play" id="ttsPlayBtn" onclick="ttsToggle()">
+            ▶ התחל הקראה
+          </button>
+          <button class="tts-btn tts-stop" id="ttsStopBtn" onclick="ttsStop()" style="display:none;">
+            ⏹ עצור
+          </button>
+        </div>
+
+        <div class="tts-progress-row" id="ttsProgress" style="display:none;">
+          <div class="tts-progress-bar">
+            <div class="tts-progress-fill" id="ttsProgressFill"></div>
+          </div>
+          <span class="tts-progress-label" id="ttsProgressLabel">מתחיל...</span>
+        </div>
+
+        <div class="tts-settings">
+          <label class="tts-setting-label">🐢 מהירות קריאה</label>
+          <input type="range" id="ttsSpeed" min="0.5" max="1.8" step="0.1" value="0.9"
+            class="tts-speed-slider" oninput="updateTtsSpeed(this.value)">
+          <span id="ttsSpeedVal" class="tts-speed-val">0.9×</span>
+        </div>
+
+        <div class="tts-lang-row">
+          <label class="tts-setting-label">🌐 שפת ההקראה</label>
+          <select id="ttsLang" class="tts-lang-select" onchange="ttsChangeLang(this.value)">
+            <option value="he-IL">עברית 🇮🇱</option>
+            <option value="en-US">English 🇺🇸</option>
+            <option value="fr-FR">Français 🇫🇷</option>
+            <option value="es-ES">Español 🇦🇷</option>
+            <option value="ru-RU">Русский 🇷🇺</option>
+          </select>
+        </div>
+
+        <div class="tts-tip">
+          💡 טיפ: נעל את המסך ושים את הטלפון בכיס — ההקראה תמשיך ברקע
+        </div>
+      </div>
+
       <!-- FINISH BUTTON -->
       <div class="finish-btn-wrapper">
         <button class="btn-finish" id="finishBtn" onclick="finishLesson()">
@@ -2547,6 +2616,102 @@
   function skipOnboarding() {
     localStorage.setItem('ttt_onboarded', 'skipped');
     document.getElementById('onboardingPopup').remove();
+  }
+
+  // ─── TEXT TO SPEECH ─────────────────────────────────────────
+  let ttsUtterance = null;
+  let ttsLang = 'he-IL';
+  let ttsRate = 0.9;
+  let ttsSentences = [];
+  let ttsCurrent = 0;
+  let ttsPlaying = false;
+
+  function getLessonText() {
+    const content = document.querySelector('#page-lesson .lesson-content');
+    if (!content) return '';
+    return content.innerText.replace(/\s+/g, ' ').trim();
+  }
+
+  function ttsToggle() {
+    if (ttsPlaying) {
+      window.speechSynthesis.pause();
+      ttsPlaying = false;
+      document.getElementById('ttsPlayBtn').textContent = '▶ המשך הקראה';
+      document.getElementById('ttsPlayBtn').classList.remove('playing');
+    } else {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+        ttsPlaying = true;
+        document.getElementById('ttsPlayBtn').textContent = '⏸ השהה';
+        document.getElementById('ttsPlayBtn').classList.add('playing');
+      } else {
+        ttsStart();
+      }
+    }
+  }
+
+  function ttsStart() {
+    if (!('speechSynthesis' in window)) {
+      showToast('הדפדפן שלך אינו תומך בהקראה. נסה Chrome או Safari.');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const text = getLessonText();
+    if (!text) return;
+
+    ttsUtterance = new SpeechSynthesisUtterance(text);
+    ttsUtterance.lang = ttsLang;
+    ttsUtterance.rate = ttsRate;
+    ttsUtterance.pitch = 1;
+
+    // Progress tracking
+    const words = text.split(' ');
+    ttsUtterance.onboundary = (e) => {
+      if (e.name === 'word') {
+        const pct = Math.round((e.charIndex / text.length) * 100);
+        const fill = document.getElementById('ttsProgressFill');
+        const label = document.getElementById('ttsProgressLabel');
+        if (fill) fill.style.width = pct + '%';
+        if (label) label.textContent = `${pct}% הושלם`;
+      }
+    };
+
+    ttsUtterance.onend = () => {
+      ttsStop();
+      showToast('✅ ההקראה הסתיימה! כל הכבוד שלמדת בדרך 🎉');
+    };
+
+    ttsUtterance.onerror = () => ttsStop();
+
+    window.speechSynthesis.speak(ttsUtterance);
+    ttsPlaying = true;
+
+    document.getElementById('ttsPlayBtn').textContent = '⏸ השהה';
+    document.getElementById('ttsPlayBtn').classList.add('playing');
+    document.getElementById('ttsStopBtn').style.display = 'inline-block';
+    document.getElementById('ttsProgress').style.display = 'block';
+    document.getElementById('ttsProgressFill').style.width = '0%';
+    document.getElementById('ttsProgressLabel').textContent = 'מתחיל...';
+  }
+
+  function ttsStop() {
+    window.speechSynthesis.cancel();
+    ttsPlaying = false;
+    document.getElementById('ttsPlayBtn').textContent = '▶ התחל הקראה';
+    document.getElementById('ttsPlayBtn').classList.remove('playing');
+    document.getElementById('ttsStopBtn').style.display = 'none';
+    document.getElementById('ttsProgress').style.display = 'none';
+  }
+
+  function updateTtsSpeed(val) {
+    ttsRate = parseFloat(val);
+    document.getElementById('ttsSpeedVal').textContent = val + '×';
+    if (ttsPlaying) { ttsStop(); ttsStart(); }
+  }
+
+  function ttsChangeLang(lang) {
+    ttsLang = lang;
+    if (ttsPlaying) { ttsStop(); ttsStart(); }
   }
 
   function earnMazke() {
