@@ -1244,6 +1244,11 @@
 
     .ach-icon { font-size: 1.75rem; display: block; margin-bottom: 0.4rem; }
     .ach-name { font-weight: 700; font-size: 0.825rem; color: var(--ink); }
+    .share-btns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; justify-content: center; }
+    .share-btn { border: none; border-radius: 20px; padding: 5px 12px; font-size: 0.72rem; cursor: pointer; font-family: 'Heebo', sans-serif; font-weight: 600; transition: transform 0.15s; }
+    .share-btn:hover { transform: scale(1.05); }
+    .share-btn.whatsapp { background: #25D366; color: white; }
+    .share-btn.other { background: var(--gold); color: white; }
     .ach-hint { font-size: 0.72rem; color: var(--stone); margin-top: 0.25rem; }
 
     .sub-card-inner {
@@ -1531,7 +1536,7 @@
         </div>
         <div class="pricing-card popular">
           <div class="popular-badge">⭐ הכי פופולרי</div>
-          <div class="plan-name">פרימיום חודשי</div>
+          <div class="plan-name">חודשי</div>
           <div class="plan-price">₪18.90</div>
           <div class="plan-period">לחודש</div>
           <ul class="plan-features">
@@ -1548,7 +1553,7 @@
           <div class="plan-price">₪148</div>
           <div class="plan-period">לשנה</div>
           <ul class="plan-features">
-            <li>✅ הכל בפרימיום</li>
+            <li>✅ כל התכנים</li>
             <li>✅ עדיפות בתכנים חדשים</li>
             <li>✅ חיסכון של ₪79 לשנה</li>
           </ul>
@@ -1847,7 +1852,7 @@
 
         <div class="pricing-card popular">
           <div class="popular-badge">⭐ הכי פופולרי</div>
-          <div class="plan-name">פרימיום חודשי</div>
+          <div class="plan-name">חודשי</div>
           <div class="plan-price" id="price-monthly">₪18.90</div>
           <div class="plan-period" id="period-monthly">לחודש</div>
           <ul class="plan-features">
@@ -1861,12 +1866,27 @@
         </div>
 
         <div class="pricing-card">
+          <div class="savings-badge">חיסכון 21%</div>
+          <div class="plan-name">חצי שנתי</div>
+          <div class="plan-price" id="price-biannual">₪89</div>
+          <div class="plan-period" id="period-biannual">ל-6 חודשים</div>
+          <ul class="plan-features">
+            <li>✅ גישה לכל 10 הקטגוריות</li>
+            <li>✅ כל הרבנים</li>
+            <li>✅ שמירת רצף ותגי הישג</li>
+            <li>✅ בחירת יעד תרומה</li>
+            <li>✅ חיסכון של ₪24.40</li>
+          </ul>
+          <button class="btn-primary btn-sm" onclick="showDonationSelector('biannual')">הצטרף עכשיו</button>
+        </div>
+
+        <div class="pricing-card">
           <div class="savings-badge" id="savings-badge">חיסכון 35%</div>
           <div class="plan-name">שנתי</div>
           <div class="plan-price" id="price-annual">₪148</div>
           <div class="plan-period" id="period-annual">לשנה</div>
           <ul class="plan-features">
-            <li>✅ הכל בפרימיום</li>
+            <li>✅ כל התכנים</li>
             <li>✅ עדיפות בתכנים חדשים</li>
             <li id="savings-text">✅ חיסכון של ₪79 לשנה</li>
           </ul>
@@ -1971,10 +1991,14 @@
             <div class="ach-name">מתמיד</div>
             <div class="ach-hint" style="color:var(--gold-dark);">✅ הושג</div>
           </div>
-          <div class="achievement-item locked">
+          <div class="achievement-item locked" id="ach-mazke">
             <span class="ach-icon">🌟</span>
             <div class="ach-name">מזכה הרבים</div>
             <div class="ach-hint">שתף שיעור עם חבר</div>
+            <div class="share-btns">
+              <button class="share-btn whatsapp" onclick="shareWhatsApp()">💬 וואטסאפ</button>
+              <button class="share-btn other" onclick="shareOther()">🔗 שתף</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1984,7 +2008,7 @@
         <div class="section-heading">💎 המנוי שלי</div>
         <div class="sub-card-inner">
           <div>
-            <div class="sub-plan-badge">פרימיום חודשי</div>
+            <div class="sub-plan-badge">חודשי</div>
             <div class="sub-details">מתחדש ב-15 לינואר 2025</div>
             <div class="sub-details">יעד תרומה: 50/50 &nbsp; <span class="change-link" onclick="navigate('subscribe')">שינוי</span></div>
           </div>
@@ -2073,10 +2097,10 @@
 
   // ─── CURRENCY DATA ───
   const currencies = {
-    ILS: { symbol: '₪', monthly: '18.90', annual: '148', savings: '₪79', free: '0' },
-    USD: { symbol: '$', monthly: '4.99',  annual: '39',  savings: '$21', free: '0' },
-    EUR: { symbol: '€', monthly: '4.99',  annual: '37',  savings: '€20', free: '0' },
-    GBP: { symbol: '£', monthly: '4.49',  annual: '33',  savings: '£18', free: '0' },
+    ILS: { symbol: '₪', monthly: '18.90', biannual: '89',   annual: '148', savings: '₪79', free: '0' },
+    USD: { symbol: '$', monthly: '4.99',  biannual: '23.99', annual: '39',  savings: '$21', free: '0' },
+    EUR: { symbol: '€', monthly: '4.99',  biannual: '22.99', annual: '37',  savings: '€20', free: '0' },
+    GBP: { symbol: '£', monthly: '4.49',  biannual: '21.99', annual: '33',  savings: '£18', free: '0' },
   };
 
   let activeCurrency = 'ILS';
@@ -2105,6 +2129,7 @@
     if (!c) return;
     document.getElementById('price-free').textContent = c.symbol + c.free;
     document.getElementById('price-monthly').textContent = c.symbol + c.monthly;
+    document.getElementById('price-biannual').textContent = c.symbol + c.biannual;
     document.getElementById('price-annual').textContent = c.symbol + c.annual;
     document.getElementById('savings-text').textContent = '✅ חיסכון של ' + c.savings + ' לשנה';
   }
@@ -2215,6 +2240,39 @@
       el.setAttribute('onclick', orig.replace('navigate(', 'navProxy('));
     }
   });
+
+  function shareWhatsApp() {
+    const text = encodeURIComponent('גיליתי אפליקציה מדהימה ללימוד תורה יומי — 5 דקות ביום שמשנות חיים! 🌟\nהצטרף אליי ב"עת לתורה": https://timetorahtorah.com');
+    window.open('https://wa.me/?text=' + text, '_blank');
+    earnMazke();
+  }
+
+  function shareOther() {
+    const shareData = {
+      title: 'עת לתורה — Time to Torah',
+      text: '5 דקות תורה ביום משנות חיים! הצטרף אליי ב"עת לתורה"',
+      url: 'https://timetorahtorah.com'
+    };
+    if (navigator.share) {
+      navigator.share(shareData);
+      earnMazke();
+    } else {
+      navigator.clipboard.writeText('https://timetorahtorah.com');
+      showToast('הקישור הועתק! שתף עם חבר 🔗');
+      earnMazke();
+    }
+  }
+
+  function earnMazke() {
+    const el = document.getElementById('ach-mazke');
+    if (el) {
+      el.classList.remove('locked');
+      el.classList.add('earned');
+      el.querySelector('.ach-hint').textContent = '✅ הושג';
+      el.querySelector('.ach-hint').style.color = 'var(--gold-dark)';
+      showToast('🌟 הישג חדש: מזכה הרבים!');
+    }
+  }
 </script>
 </body>
 </html>
