@@ -1388,6 +1388,7 @@
       <option value="ILS">₪ ILS</option>
       <option value="USD">$ USD</option>
       <option value="EUR">€ EUR</option>
+      <option value="GBP">£ GBP</option>
       
     </select>
     <button class="btn-login" onclick="navigate('subscribe')">כניסה</button>
@@ -2140,12 +2141,13 @@
     ILS: { symbol: '₪', monthly: '18.90', biannual: '89',   annual: '148', free: '0' },
     USD: { symbol: '$', monthly: '4.99',  biannual: '23.99', annual: '39',  free: '0' },
     EUR: { symbol: '€', monthly: '4.99',  biannual: '22.99', annual: '37',  free: '0' },
+    GBP: { symbol: '£', monthly: '4.49',  biannual: '21.99', annual: '33',  free: '0' },
   };
 
   let liveRates = null;
 
   function fetchLiveRates() {
-    fetch('https://api.frankfurter.app/latest?from=ILS&to=USD,EUR')
+    fetch('https://api.frankfurter.app/latest?from=ILS&to=USD,EUR,GBP')
       .then(r => r.json())
       .then(data => {
         liveRates = data.rates;
@@ -2166,7 +2168,7 @@
     if (!liveRates || code === 'ILS') return;
     const rate = liveRates[code];
     if (!rate) return;
-    const sym = { USD: '$', EUR: '€' }[code] || code + ' ';
+    const sym = { USD: '$', EUR: '€', GBP: '£' }[code] || code + ' ';
     const fmt = (n) => (n * rate).toFixed(2);
     const el_m = document.getElementById('price-monthly');
     const el_b = document.getElementById('price-biannual');
@@ -2431,7 +2433,7 @@
   const COUNTRY_MAP = {
     IL: { lang: 'he', currency: 'ILS', name: 'ישראל' },
     US: { lang: 'en', currency: 'USD', name: 'United States' },
-    GB: { lang: 'en', currency: 'USD', name: 'United Kingdom' },
+    GB: { lang: 'en', currency: 'GBP', name: 'United Kingdom' },
     CA: { lang: 'en', currency: 'USD', name: 'Canada' },
     AU: { lang: 'en', currency: 'USD', name: 'Australia' },
     FR: { lang: 'fr', currency: 'EUR', name: 'France' },
