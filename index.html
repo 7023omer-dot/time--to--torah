@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>עת לתורה — Time to Torah</title>
+  <title>Time to Torah — עת לתורה</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet" />
@@ -234,6 +234,7 @@
       font-style: italic;
       letter-spacing: 0.02em;
     }
+    .hero-subtitle-he { font-family: 'Frank Ruhl Libre', serif; font-size: 1.4rem; color: var(--gold); opacity: 0.8; margin-top: -0.5rem; margin-bottom: 0.5rem; display: block; }
     .hero-tag {
       display: inline-block;
       background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
@@ -1360,7 +1361,7 @@
 <nav class="navbar">
   <a class="navbar-logo" onclick="navigate('home')">
     <span class="menorah">🕎</span>
-    <span class="brand">עת לתורה</span>
+    <span class="brand">Time to Torah</span>
   </a>
   <ul class="navbar-links">
     <li><a onclick="navigate('home')" id="nav-home" class="active">בית</a></li>
@@ -1373,7 +1374,7 @@
       <option value="ILS">₪ ILS</option>
       <option value="USD">$ USD</option>
       <option value="EUR">€ EUR</option>
-      <option value="GBP">£ GBP</option>
+      
     </select>
     <button class="btn-login" onclick="navigate('subscribe')">כניסה</button>
   </div>
@@ -1388,8 +1389,8 @@
   <section class="hero">
     <p class="hero-pasuk">״וְזָכַרְתָּ אֶת ה׳ אֱלֹקֶיךָ כִּי הוּא הַנֹּתֵן לְךָ כֹּחַ לַעֲשׂוֹת חָיִל״ — דברים ח׳, י״ח</p>
     <span class="hero-tag">✨ 5 דקות תורה ביום משנות חיים</span>
-    <h1>עת לתורה</h1>
-    <p class="hero-subtitle">הפלטפורמה הגדולה בעולם ללימוד תורה יומי קצר ואיכותי</p>
+    <h1>Time to Torah</h1><p class="hero-subtitle-he">עת לתורה</p>
+    <p class="hero-subtitle">The world's leading platform for daily short Torah learning — for every Jew, everywhere</p>
     <div class="hero-cta">
       <button class="btn-primary" onclick="navigate('subscribe')">התחל ללמוד חינם</button>
       <button class="btn-outline" onclick="navigate('learn')">ראה כיצד עובד</button>
@@ -1593,7 +1594,7 @@
   <footer>
     <div class="footer-logo">
       <span class="menorah">🕎</span>
-      <span class="brand">עת לתורה</span>
+      <span class="brand">Time to Torah</span>
     </div>
     <ul class="footer-links">
       <li><a onclick="navigate('home')">בית</a></li>
@@ -1605,7 +1606,7 @@
       <li><a>תנאי שימוש</a></li>
     </ul>
     <div class="footer-charity">🤍 כל ההכנסות מופנות לצדקה ולתמיכה בתורה</div>
-    <div class="footer-copy">© 2024 עת לתורה — Time to Torah. כל הזכויות שמורות.</div>
+    <div class="footer-copy">© 2024 Time to Torah — עת לתורה. כל הזכויות שמורות.</div>
   </footer>
 </div>
 
@@ -1833,7 +1834,7 @@
         <button class="currency-btn active" onclick="switchCurrency('ILS', this)">₪ ILS</button>
         <button class="currency-btn" onclick="switchCurrency('USD', this)">$ USD</button>
         <button class="currency-btn" onclick="switchCurrency('EUR', this)">€ EUR</button>
-        <button class="currency-btn" onclick="switchCurrency('GBP', this)">£ GBP</button>
+        
       </div>
 
       <!-- PRICING CARDS -->
