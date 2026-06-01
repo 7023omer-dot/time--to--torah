@@ -1316,6 +1316,11 @@
     .toggle-slider:before { position:absolute; content:""; height:20px; width:20px; right:3px; bottom:3px; background:white; border-radius:50%; transition:.3s; }
     .toggle-switch input:checked + .toggle-slider { background:var(--gold); }
     .toggle-switch input:checked + .toggle-slider:before { transform:translateX(-24px); }
+    .halacha-note { display:flex; gap:0.7rem; align-items:flex-start; margin-top:0.9rem; background:linear-gradient(135deg,rgba(201,168,76,0.1),rgba(201,168,76,0.03)); border:1px solid rgba(201,168,76,0.35); border-radius:10px; padding:0.85rem 1rem; }
+    .halacha-icon { font-size:1.3rem; flex-shrink:0; margin-top:2px; }
+    .halacha-text { font-family:'Frank Ruhl Libre',serif; font-size:1rem; color:var(--gold-dark); font-weight:700; margin-bottom:2px; }
+    .halacha-source { font-size:0.75rem; color:var(--stone); font-style:italic; margin-bottom:5px; }
+    .halacha-explain { font-size:0.82rem; color:var(--ink); line-height:1.6; opacity:0.85; }
 
     .progress-bar-track {
       background: rgba(201,168,76,0.12);
@@ -2096,6 +2101,14 @@
             <div class="reminder-time-row">
               <label class="reminder-label-sm">⏰ שעת התזכורת</label>
               <input type="time" id="reminderTime" value="07:00" class="time-picker">
+              <div class="halacha-note">
+                <span class="halacha-icon">📜</span>
+                <div>
+                  <div class="halacha-text">״קָבַעְתָּ עִתִּים לַתּוֹרָה?״</div>
+                  <div class="halacha-source">תלמוד בבלי, שבת ל״א ע״א</div>
+                  <div class="halacha-explain">השאלה הראשונה שישאלו כל אדם ביום הדין — האם קבע עת קבועה ללימוד תורה. דווקא הקביעות, אותה שעה שחוזרת כל יום, היא שיוצרת שינוי אמיתי בנפש.</div>
+                </div>
+              </div>
             </div>
 
             <div class="reminder-channel-row">
@@ -2499,6 +2512,10 @@
             רוצה שנשלח לך תזכורת יומית?
           </p>
           <div style="background:white;border:1px solid rgba(201,168,76,0.3);border-radius:12px;padding:1rem;margin-bottom:1rem;text-align:right;">
+            <div style="font-size:0.78rem;color:var(--gold-dark);font-style:italic;margin-bottom:0.6rem;padding:0.5rem 0.7rem;background:rgba(201,168,76,0.08);border-radius:8px;border-right:3px solid var(--gold);">
+              ״קָבַעְתָּ עִתִּים לַתּוֹרָה?״ — שבת ל״א ע״א<br>
+              <span style="font-size:0.72rem;color:var(--stone);font-style:normal;">קביעת שעה קבועה היא הסוד לרצף אמיתי</span>
+            </div>
             <div style="font-size:0.85rem;color:var(--stone);margin-bottom:0.5rem;">⏰ באיזו שעה נשלח לך?</div>
             <input type="time" id="onboardTime" value="07:30" style="border:1px solid rgba(201,168,76,0.4);border-radius:8px;padding:8px 12px;font-size:1rem;direction:ltr;width:130px;">
             <div style="font-size:0.85rem;color:var(--stone);margin:0.8rem 0 0.5rem;">📧 לאיזה מייל?</div>
