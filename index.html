@@ -1581,7 +1581,7 @@
           <div class="category-desc">הלכה למעשה בשפה ברורה</div>
           <span class="badge-time">5 דק׳</span>
         </div>
-        <div class="category-card" onclick="navigate('lesson')">
+        <div class="category-card" onclick="loadBabaSaliLesson(); navigate('lesson')">
           <span class="category-icon">👑</span>
           <div class="category-name">סיפורי צדיקים</div>
           <div class="category-desc">סיפורים מעוררי השראה</div>
@@ -2712,6 +2712,73 @@
   function ttsChangeLang(lang) {
     ttsLang = lang;
     if (ttsPlaying) { ttsStop(); ttsStart(); }
+  }
+
+  function loadBabaSaliLesson() {
+    const title = document.querySelector('#page-lesson h1.lesson-title');
+    const cat = document.querySelector('#page-lesson .category-badge');
+    const rabbi = document.querySelector('#page-lesson .rabbi-card .name');
+    const bio = document.querySelector('#page-lesson .rabbi-card .bio');
+    const avatar = document.querySelector('#page-lesson .rabbi-avatar');
+    const meta = document.querySelector('#page-lesson .lesson-meta');
+    const content = document.querySelector('#page-lesson .lesson-content');
+    const audioLabel = document.querySelector('#page-lesson .audio-label');
+
+    if (cat) cat.textContent = '👑 סיפורי צדיקים';
+    if (title) title.textContent = 'הבאבא סאלי — אורו של ישראל';
+    if (rabbi) rabbi.textContent = 'רבי ישראל אביחצירא זצ״ל — הבאבא סאלי';
+    if (bio) bio.textContent = 'מגדולי המקובלים של המאה העשרים. נולד במרוקו בשנת תרמ״ט (1889) ועלה לישראל. ישב בנתיבות עד פטירתו בשנת תשמ״ד (1984). ידוע בנסים ובקדושתו האין-סופית.';
+    if (avatar) avatar.textContent = 'בס';
+    if (audioLabel) audioLabel.textContent = '🎧 סיפור חייו — הבאבא סאלי זצ״ל';
+
+    if (content) content.innerHTML = `
+      <p>
+        שמו האמיתי רבי ישראל אביחצירא, אך כולם קראו לו "הבאבא סאלי" — האבא המתפלל.
+        הוא נולד בתאפילאלת שבמרוקו למשפחה שהיא שושלת קדושים ומקובלים דורות על דורות.
+        מילדותו ידעו שגדול יצא ממנו — ילד שבמקום לשחק עם חבריו, ישב ולמד תורה בלהט שריפה.
+      </p>
+
+      <div class="highlight">
+        ״כל מה שאני יודע — למדתי מתוך הדמעות שבכיתי על כל דף גמרא.״
+        <span style="font-size:0.82rem;display:block;margin-top:4px;opacity:0.75;">— הבאבא סאלי זצ״ל</span>
+      </div>
+
+      <p>
+        המעשה הידוע: בצעירותו, רבי ישראל היה שקוע בתפילה בבית הכנסת.
+        פתאום הביא מישהו ידיעה שאשתו חולה קשה ורופאים אמרו שאין תקווה.
+        קם הבאבא סאלי, שקע בתפילה מוחלטת — שכח מהעולם, שכח מעצמו, רק ה׳ לפניו.
+        כשסיים, שב הביתה. אשתו ישבה ובישלה ארוחה. ריפוי מיידי, ללא הסבר.
+        אמר אז: ״כשהאדם שוכח את עצמו לגמרי — ה׳ זוכר אותו.״
+      </p>
+
+      <p>
+        בנתיבות, שם ישב שנותיו האחרונות, זרמו אליו אלפים מכל קצות הארץ.
+        עשירים, עניים, חרדים, חילוניים, ספרדים, אשכנזים — כולם.
+        לפני כל מה שהם אמרו, ידע הבאבא סאלי מה בא לבקש.
+        לפני שישבו, שאל: ״יש לך ילד חולה? שם אמו?״
+        ובירך. ואנשים סיפרו על נסים שאין להם הסבר רציונלי.
+      </p>
+
+      <div class="highlight">
+        ״הניסים שלי אינם שלי — הם של הקב״ה. אני רק כלי.
+        כל יהודי יכול להיות כלי. צריך רק לרוקן את עצמו מהאגו ולהתמלא בתורה ובתפילה.״
+        <span style="font-size:0.82rem;display:block;margin-top:4px;opacity:0.75;">— הבאבא סאלי זצ״ל</span>
+      </div>
+
+      <p>
+        ב-ד׳ בשבט תשמ״ד, שנת 1984, עלתה נשמתו השמיימה.
+        מאות אלפים ליוו אותו בדרכו האחרונה — בנתיבות, עיר קטנה בנגב.
+        עד היום, ביום הילולתו, מגיעים לנתיבות מאות אלפי יהודים מכל העולם.
+        קברו הוא בין המקומות הנפקדים ביותר בארץ ישראל.
+      </p>
+
+      <p>
+        <strong>המסר לחיים:</strong> הבאבא סאלי לימד שאין הבדל בין יהודי ליהודי בעיני שמיים.
+        כולם אהובים. כולם יכולים להגיע לגדולה.
+        הדרך? פשוטה: תורה, תפילה, ואהבת הזולת.
+        ״כשאוהב יהודי — אני מרגיש שאוהב את ה׳.״
+      </p>
+    `;
   }
 
   function earnMazke() {
