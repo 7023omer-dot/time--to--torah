@@ -2140,13 +2140,12 @@
     ILS: { symbol: '₪', monthly: '18.90', biannual: '89',   annual: '148', free: '0' },
     USD: { symbol: '$', monthly: '4.99',  biannual: '23.99', annual: '39',  free: '0' },
     EUR: { symbol: '€', monthly: '4.99',  biannual: '22.99', annual: '37',  free: '0' },
-    GBP: { symbol: '£', monthly: '4.49',  biannual: '21.99', annual: '33',  free: '0' },
   };
 
   let liveRates = null;
 
   function fetchLiveRates() {
-    fetch('https://api.frankfurter.app/latest?from=ILS&to=USD,EUR,GBP')
+    fetch('https://api.frankfurter.app/latest?from=ILS&to=USD,EUR')
       .then(r => r.json())
       .then(data => {
         liveRates = data.rates;
@@ -2167,7 +2166,7 @@
     if (!liveRates || code === 'ILS') return;
     const rate = liveRates[code];
     if (!rate) return;
-    const sym = { USD: '$', EUR: '€', GBP: '£' }[code] || code + ' ';
+    const sym = { USD: '$', EUR: '€' }[code] || code + ' ';
     const fmt = (n) => (n * rate).toFixed(2);
     const el_m = document.getElementById('price-monthly');
     const el_b = document.getElementById('price-biannual');
@@ -2391,6 +2390,24 @@
       heroSub: 'Time to Torah',
       joinBtn: 'Присоединиться', sampleBtn: 'Посмотреть урок',
       geoMsg: (c) => `🌍 Мы определили, что вы из ${c} — показываем на русском` },
+    pt: { name: 'Português', flag: '🇧🇷', dir: 'ltr', label: 'Português', currency: 'USD',
+      nav: ['Início','Aprender','Assinatura','Perfil'], login: 'Entrar',
+      heroTag: '✨ 5 minutos de Torá por dia mudam tudo',
+      heroSub: 'Time to Torah',
+      joinBtn: 'Junte-se à família', sampleBtn: 'Ver uma aula',
+      geoMsg: (c) => `🌍 Detectamos que você é do ${c} — exibindo em português` },
+    de: { name: 'Deutsch', flag: '🇩🇪', dir: 'ltr', label: 'Deutsch', currency: 'EUR',
+      nav: ['Startseite','Lernen','Abonnement','Profil'], login: 'Anmelden',
+      heroTag: '✨ 5 Minuten Tora täglich verändern alles',
+      heroSub: 'Time to Torah',
+      joinBtn: 'Der Familie beitreten', sampleBtn: 'Lektion ansehen',
+      geoMsg: (c) => `🌍 Wir haben erkannt, dass Sie aus ${c} kommen — Anzeige auf Deutsch` },
+    it: { name: 'Italiano', flag: '🇮🇹', dir: 'ltr', label: 'Italiano', currency: 'EUR',
+      nav: ['Home','Impara','Abbonamento','Profilo'], login: 'Accedi',
+      heroTag: '✨ 5 minuti di Torah al giorno cambiano tutto',
+      heroSub: 'Time to Torah',
+      joinBtn: 'Unisciti alla famiglia', sampleBtn: 'Vedi una lezione',
+      geoMsg: (c) => `🌍 Abbiamo rilevato che sei in ${c} — visualizzazione in italiano` },
     yi: { name: 'ייִדיש', flag: '🕍', dir: 'rtl', label: 'ייִדיש', currency: 'USD',
       nav: ['היים','לערנען','אַבאָנעמענט','פּראָפֿיל'], login: 'אַרײַן',
       heroTag: '✨ 5 מינוט תּורה אַ טאָג ענדערט אַלץ',
@@ -2405,21 +2422,28 @@
     'fr': 'fr', 'fr-FR': 'fr', 'fr-BE': 'fr', 'fr-CA': 'fr',
     'es': 'es', 'es-AR': 'es', 'es-MX': 'es', 'es-ES': 'es',
     'ru': 'ru', 'ru-RU': 'ru',
+    'pt': 'pt', 'pt-BR': 'pt', 'pt-PT': 'pt',
+    'de': 'de', 'de-DE': 'de', 'de-AT': 'de', 'de-CH': 'de',
+    'it': 'it', 'it-IT': 'it',
     'yi': 'yi',
   };
 
   const COUNTRY_MAP = {
     IL: { lang: 'he', currency: 'ILS', name: 'ישראל' },
     US: { lang: 'en', currency: 'USD', name: 'United States' },
-    GB: { lang: 'en', currency: 'GBP', name: 'United Kingdom' },
+    GB: { lang: 'en', currency: 'USD', name: 'United Kingdom' },
     CA: { lang: 'en', currency: 'USD', name: 'Canada' },
     AU: { lang: 'en', currency: 'USD', name: 'Australia' },
     FR: { lang: 'fr', currency: 'EUR', name: 'France' },
     BE: { lang: 'fr', currency: 'EUR', name: 'Belgique' },
     AR: { lang: 'es', currency: 'USD', name: 'Argentina' },
     MX: { lang: 'es', currency: 'USD', name: 'México' },
-    BR: { lang: 'es', currency: 'USD', name: 'Brasil' },
+    BR: { lang: 'pt', currency: 'USD', name: 'Brasil' },
+    PT: { lang: 'pt', currency: 'EUR', name: 'Portugal' },
     RU: { lang: 'ru', currency: 'USD', name: 'Россия' },
+    DE: { lang: 'de', currency: 'EUR', name: 'Deutschland' },
+    AT: { lang: 'de', currency: 'EUR', name: 'Österreich' },
+    IT: { lang: 'it', currency: 'EUR', name: 'Italia' },
     UA: { lang: 'ru', currency: 'USD', name: 'Україна' },
     DE: { lang: 'en', currency: 'EUR', name: 'Deutschland' },
     CH: { lang: 'fr', currency: 'EUR', name: 'Switzerland' },
