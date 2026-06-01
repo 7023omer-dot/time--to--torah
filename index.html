@@ -2185,23 +2185,34 @@
 
   let activeCurrency = 'ILS';
 
+  // Currency → language mapping
+  const CURRENCY_LANG = {
+    ILS: 'he',
+    USD: 'en',
+    EUR: 'en',
+    GBP: 'en',
+  };
+
   function switchCurrency(code, btn) {
     activeCurrency = code;
     document.querySelectorAll('.currency-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     updatePrices(code);
-
-    // sync global dropdown
     document.getElementById('globalCurrency').value = code;
+    // Auto-switch language
+    const lang = CURRENCY_LANG[code] || 'en';
+    if (lang !== activeLang) applyLang(lang, null);
   }
 
   function syncCurrency(code) {
     activeCurrency = code;
     updatePrices(code);
-    // sync subscribe page buttons
     document.querySelectorAll('.currency-btn').forEach(b => {
       b.classList.toggle('active', b.textContent.includes(code));
     });
+    // Auto-switch language
+    const lang = CURRENCY_LANG[code] || 'en';
+    if (lang !== activeLang) applyLang(lang, null);
   }
 
   function updatePrices(code) {
