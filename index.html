@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl">
+<html lang="he" dir="rtl" id="htmlRoot">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -1363,6 +1363,14 @@
 </head>
 <body>
 
+<!-- GEO / LANGUAGE BAR -->
+<div id="geoBar" style="display:none;background:var(--ink);color:var(--gold-light);text-align:center;padding:8px 16px;font-size:0.82rem;font-family:'Heebo',sans-serif;position:relative;z-index:200;">
+  <span id="geoBarText"></span>
+  &nbsp;|&nbsp;
+  <span id="langSwitchBtns" style="display:inline-flex;gap:6px;flex-wrap:wrap;justify-content:center;"></span>
+  <button onclick="document.getElementById('geoBar').style.display='none'" style="background:none;border:none;color:var(--stone);cursor:pointer;margin-right:8px;font-size:1rem;position:absolute;left:12px;top:50%;transform:translateY(-50%);">✕</button>
+</div>
+
 <!-- NAVBAR -->
 <nav class="navbar">
   <a class="navbar-logo" onclick="navigate('home')">
@@ -2125,12 +2133,54 @@
   }
 
   // ─── CURRENCY DATA ───
+  // Base prices in ILS
+  const BASE_ILS = { monthly: 18.90, biannual: 89, annual: 148 };
+
   const currencies = {
-    ILS: { symbol: '₪', monthly: '18.90', biannual: '89',   annual: '148', savings: '₪79', free: '0' },
-    USD: { symbol: '$', monthly: '4.99',  biannual: '23.99', annual: '39',  savings: '$21', free: '0' },
-    EUR: { symbol: '€', monthly: '4.99',  biannual: '22.99', annual: '37',  savings: '€20', free: '0' },
-    GBP: { symbol: '£', monthly: '4.49',  biannual: '21.99', annual: '33',  savings: '£18', free: '0' },
+    ILS: { symbol: '₪', monthly: '18.90', biannual: '89',   annual: '148', free: '0' },
+    USD: { symbol: '$', monthly: '4.99',  biannual: '23.99', annual: '39',  free: '0' },
+    EUR: { symbol: '€', monthly: '4.99',  biannual: '22.99', annual: '37',  free: '0' },
+    GBP: { symbol: '£', monthly: '4.49',  biannual: '21.99', annual: '33',  free: '0' },
   };
+
+  let liveRates = null;
+
+  function fetchLiveRates() {
+    fetch('https://api.frankfurter.app/latest?from=ILS&to=USD,EUR,GBP')
+      .then(r => r.json())
+      .then(data => {
+        liveRates = data.rates;
+        updatePricesLive(activeCurrency);
+        const existing = document.getElementById('liveRateNote');
+        if (!existing) {
+          const note = document.createElement('div');
+          note.id = 'liveRateNote';
+          note.style.cssText = 'font-size:0.72rem;color:var(--stone);text-align:center;padding:3px 0 0;background:var(--parchment);';
+          note.textContent = '💱 מחירים לפי שער חליפין עדכני';
+          document.body.insertBefore(note, document.body.firstChild);
+        }
+      })
+      .catch(() => {});
+  }
+
+  function updatePricesLive(code) {
+    if (!liveRates || code === 'ILS') return;
+    const rate = liveRates[code];
+    if (!rate) return;
+    const sym = { USD: '$', EUR: '€', GBP: '£' }[code] || code + ' ';
+    const fmt = (n) => (n * rate).toFixed(2);
+    const el_m = document.getElementById('price-monthly');
+    const el_b = document.getElementById('price-biannual');
+    const el_a = document.getElementById('price-annual');
+    const el_s = document.getElementById('savings-text');
+    if (el_m) el_m.textContent = sym + fmt(BASE_ILS.monthly);
+    if (el_b) el_b.textContent = sym + fmt(BASE_ILS.biannual);
+    if (el_a) el_a.textContent = sym + fmt(BASE_ILS.annual);
+    if (el_s) {
+      const save = (BASE_ILS.monthly * 12 - BASE_ILS.annual) * rate;
+      el_s.textContent = 'במקום ' + sym + fmt(BASE_ILS.monthly * 12) + ' — חיסכון של ' + sym + save.toFixed(2);
+    }
+  }
 
   let activeCurrency = 'ILS';
 
@@ -2156,11 +2206,16 @@
   function updatePrices(code) {
     const c = currencies[code];
     if (!c) return;
-    document.getElementById('price-free').textContent = c.symbol + c.free;
-    document.getElementById('price-monthly').textContent = c.symbol + c.monthly;
-    document.getElementById('price-biannual').textContent = c.symbol + c.biannual;
-    document.getElementById('price-annual').textContent = c.symbol + c.annual;
-    document.getElementById('savings-text').textContent = '✅ חיסכון של ' + c.savings + ' לשנה';
+    // Use live rates if available, otherwise static
+    if (liveRates && code !== 'ILS') {
+      updatePricesLive(code);
+    } else {
+      document.getElementById('price-monthly').textContent = c.symbol + c.monthly;
+      document.getElementById('price-biannual').textContent = c.symbol + c.biannual;
+      document.getElementById('price-annual').textContent = c.symbol + c.annual;
+      const savingsEl = document.getElementById('savings-text');
+      if (savingsEl) savingsEl.textContent = 'במקום ' + c.symbol + (parseFloat(c.monthly)*12).toFixed(2) + ' — חיסכון משמעותי';
+    }
   }
 
   // ─── DONATION SELECTOR ───
@@ -2302,6 +2357,165 @@
       showToast('🌟 הישג חדש: מזכה הרבים!');
     }
   }
+
+  // ─── GEO + LANGUAGE DETECTION ───────────────────────────────
+
+  const LANGS = {
+    he: { name: 'עברית', flag: '🇮🇱', dir: 'rtl', label: 'עברית', currency: 'ILS',
+      nav: ['בית','לימוד','מנוי','פרופיל'], login: 'כניסה',
+      heroTag: '✨ 5 דקות תורה ביום משנות חיים',
+      heroSub: 'עת לתורה',
+      joinBtn: 'הצטרף למשפחה', sampleBtn: 'ראה שיעור לדוגמה',
+      geoMsg: (c) => `🌍 זיהינו שאתה מ-${c} — האתר מוצג בעברית` },
+    en: { name: 'English', flag: '🇺🇸', dir: 'ltr', label: 'English', currency: 'USD',
+      nav: ['Home','Learn','Subscribe','Profile'], login: 'Login',
+      heroTag: '✨ 5 minutes of Torah a day changes everything',
+      heroSub: 'Time to Torah',
+      joinBtn: 'Join the Family', sampleBtn: 'See a Sample Lesson',
+      geoMsg: (c) => `🌍 We detected you're from ${c} — showing in English` },
+    fr: { name: 'Français', flag: '🇫🇷', dir: 'ltr', label: 'Français', currency: 'EUR',
+      nav: ['Accueil','Apprendre','Abonnement','Profil'], login: 'Connexion',
+      heroTag: '✨ 5 minutes de Torah par jour changent tout',
+      heroSub: 'Time to Torah',
+      joinBtn: "Rejoindre la famille", sampleBtn: 'Voir une leçon',
+      geoMsg: (c) => `🌍 Nous avons détecté que vous êtes en ${c} — affichage en français` },
+    es: { name: 'Español', flag: '🇦🇷', dir: 'ltr', label: 'Español', currency: 'USD',
+      nav: ['Inicio','Aprender','Suscripción','Perfil'], login: 'Entrar',
+      heroTag: '✨ 5 minutos de Torá al día lo cambian todo',
+      heroSub: 'Time to Torah',
+      joinBtn: 'Únete a la familia', sampleBtn: 'Ver una lección',
+      geoMsg: (c) => `🌍 Detectamos que estás en ${c} — mostrando en español` },
+    ru: { name: 'Русский', flag: '🇷🇺', dir: 'ltr', label: 'Русский', currency: 'USD',
+      nav: ['Главная','Учиться','Подписка','Профиль'], login: 'Войти',
+      heroTag: '✨ 5 минут Торы в день меняют всё',
+      heroSub: 'Time to Torah',
+      joinBtn: 'Присоединиться', sampleBtn: 'Посмотреть урок',
+      geoMsg: (c) => `🌍 Мы определили, что вы из ${c} — показываем на русском` },
+    yi: { name: 'ייִדיש', flag: '🕍', dir: 'rtl', label: 'ייִדיש', currency: 'USD',
+      nav: ['היים','לערנען','אַבאָנעמענט','פּראָפֿיל'], login: 'אַרײַן',
+      heroTag: '✨ 5 מינוט תּורה אַ טאָג ענדערט אַלץ',
+      heroSub: 'צײַט צו תּורה',
+      joinBtn: 'טרעט צו דער משפּחה', sampleBtn: 'זע אַ שיעור',
+      geoMsg: (c) => `🌍 מיר האָבן דערקענט אַז איר זײַט פֿון ${c}` },
+  };
+
+  const LOCALE_MAP = {
+    'he': 'he', 'iw': 'he',
+    'en': 'en', 'en-US': 'en', 'en-GB': 'en', 'en-CA': 'en', 'en-AU': 'en',
+    'fr': 'fr', 'fr-FR': 'fr', 'fr-BE': 'fr', 'fr-CA': 'fr',
+    'es': 'es', 'es-AR': 'es', 'es-MX': 'es', 'es-ES': 'es',
+    'ru': 'ru', 'ru-RU': 'ru',
+    'yi': 'yi',
+  };
+
+  const COUNTRY_MAP = {
+    IL: { lang: 'he', currency: 'ILS', name: 'ישראל' },
+    US: { lang: 'en', currency: 'USD', name: 'United States' },
+    GB: { lang: 'en', currency: 'GBP', name: 'United Kingdom' },
+    CA: { lang: 'en', currency: 'USD', name: 'Canada' },
+    AU: { lang: 'en', currency: 'USD', name: 'Australia' },
+    FR: { lang: 'fr', currency: 'EUR', name: 'France' },
+    BE: { lang: 'fr', currency: 'EUR', name: 'Belgique' },
+    AR: { lang: 'es', currency: 'USD', name: 'Argentina' },
+    MX: { lang: 'es', currency: 'USD', name: 'México' },
+    BR: { lang: 'es', currency: 'USD', name: 'Brasil' },
+    RU: { lang: 'ru', currency: 'USD', name: 'Россия' },
+    UA: { lang: 'ru', currency: 'USD', name: 'Україна' },
+    DE: { lang: 'en', currency: 'EUR', name: 'Deutschland' },
+    CH: { lang: 'fr', currency: 'EUR', name: 'Switzerland' },
+  };
+
+  let activeLang = 'he';
+
+  function applyLang(code, countryName) {
+    const L = LANGS[code];
+    if (!L) return;
+    activeLang = code;
+
+    // HTML dir + lang
+    document.getElementById('htmlRoot').setAttribute('lang', code);
+    document.getElementById('htmlRoot').setAttribute('dir', L.dir);
+
+    // Nav links
+    const navIds = ['nav-home','nav-learn','nav-subscribe','nav-profile'];
+    navIds.forEach((id, i) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = L.nav[i];
+    });
+
+    // Login button
+    const loginBtn = document.querySelector('.btn-login');
+    if (loginBtn) loginBtn.textContent = L.login;
+
+    // Hero tag
+    const heroTag = document.querySelector('.hero-tag');
+    if (heroTag) heroTag.textContent = L.heroTag;
+
+    // Hero subtitle-he (secondary title)
+    const heroSub = document.querySelector('.hero-subtitle-he');
+    if (heroSub) heroSub.textContent = L.heroSub;
+
+    // CTA buttons
+    const ctaBtns = document.querySelectorAll('.hero-cta button');
+    if (ctaBtns[0]) ctaBtns[0].textContent = L.joinBtn;
+    if (ctaBtns[1]) ctaBtns[1].textContent = L.sampleBtn;
+
+    // Currency
+    syncCurrency(L.currency);
+    const sel = document.getElementById('globalCurrency');
+    if (sel) sel.value = L.currency;
+
+    // Geo bar
+    if (countryName) {
+      document.getElementById('geoBarText').textContent = L.geoMsg(countryName);
+      document.getElementById('geoBar').style.display = 'block';
+    }
+  }
+
+  function buildLangSwitcher(detected) {
+    const container = document.getElementById('langSwitchBtns');
+    if (!container) return;
+    container.innerHTML = '';
+    Object.entries(LANGS).forEach(([code, L]) => {
+      const btn = document.createElement('button');
+      btn.textContent = L.flag + ' ' + L.label;
+      btn.style.cssText = `background:${code === detected ? 'var(--gold)' : 'rgba(255,255,255,0.1)'};border:none;color:white;padding:3px 10px;border-radius:12px;cursor:pointer;font-size:0.78rem;font-family:'Heebo',sans-serif;`;
+      btn.onclick = () => {
+        applyLang(code, null);
+        document.querySelectorAll('#langSwitchBtns button').forEach(b => b.style.background = 'rgba(255,255,255,0.1)');
+        btn.style.background = 'var(--gold)';
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  function detectAndApply() {
+    // Try IP geolocation (free, no key needed)
+    fetch('https://ipapi.co/json/')
+      .then(r => r.json())
+      .then(data => {
+        const country = data.country_code;
+        const cfg = COUNTRY_MAP[country];
+        const langCode = cfg ? cfg.lang : (LOCALE_MAP[navigator.language] || LOCALE_MAP[navigator.language.split('-')[0]] || 'en');
+        const countryName = cfg ? cfg.name : (data.country_name || country);
+        buildLangSwitcher(langCode);
+        applyLang(langCode, countryName);
+      })
+      .catch(() => {
+        // Fallback to browser language
+        const bl = navigator.language || 'he';
+        const langCode = LOCALE_MAP[bl] || LOCALE_MAP[bl.split('-')[0]] || 'he';
+        buildLangSwitcher(langCode);
+        if (langCode !== 'he') applyLang(langCode, null);
+        else buildLangSwitcher('he');
+      });
+  }
+
+  // Run on load
+  window.addEventListener('load', () => {
+    detectAndApply();
+    fetchLiveRates();
+  });
 </script>
 </body>
 </html>
