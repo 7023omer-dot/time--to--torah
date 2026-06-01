@@ -239,6 +239,8 @@
     .mission-text { font-family: 'Heebo', sans-serif; font-size: 1.05rem; line-height: 1.9; color: var(--ink); margin-bottom: 1rem; opacity: 0.9; }
     .mission-quote { font-family: 'Frank Ruhl Libre', serif; font-size: 1.5rem; color: var(--gold-dark); text-align: center; margin: 1.5rem 0; padding: 1rem 2rem; border-right: 4px solid var(--gold); background: rgba(201,168,76,0.07); border-radius: 8px; }
     .mission-quote-src { display: block; font-size: 0.85rem; color: var(--stone); margin-top: 0.3rem; font-style: italic; }
+    .mission-highlight { display: flex; gap: 1rem; align-items: flex-start; background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04)); border: 1.5px solid rgba(201,168,76,0.4); border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; font-size: 0.97rem; line-height: 1.8; color: var(--ink); text-align: right; }
+    .mission-highlight-icon { font-size: 2rem; flex-shrink: 0; }
     .hero-tag {
       display: inline-block;
       background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
@@ -1396,30 +1398,53 @@
     <h1>Time to Torah</h1><p class="hero-subtitle-he">עת לתורה</p>
 
     <div class="hero-mission">
+
       <p class="mission-text">
-        אנחנו מאמינים שכל יהודי — בין אם הוא חרדי, דתי, מסורתי או חילוני —
+        יש רגע בחיים שבו אדם מרגיש — משהו חסר לי. לא טלפון חדש. לא עוד שעה עבודה.
+        משהו עמוק יותר. שקט. שורש. משמעות.
+        <br><br>
+        זה הרגע שבשבילו נולד עת לתורה.
+      </p>
+
+      <p class="mission-text">
+        אנחנו מאמינים שכל יהודי — חרדי, דתי, מסורתי, חילוני, צעיר, מבוגר, בישראל או בתפוצות —
         נושא בתוכו ניצוץ של תורה שמחכה להידלק.
+        לא צריך רקע. לא צריך ידע מוקדם. לא צריך כיפה.
+        רק חמש דקות. רק רצון.
       </p>
-      <p class="mission-text">
-        5 דקות ביום. לא צריך רקע. לא צריך ידע מוקדם. רק רצון.
-        בחר נושא שמדבר אליך — אמונה, פרנסה, שלום בית, תהילים — ולמד.
-        כל יום. שמור על הרצף. תראה מה קורה לך בפנים.
-      </p>
+
       <div class="mission-quote">
         ״כָּל יִשְׂרָאֵל עֲרֵבִים זֶה לָזֶה״
         <span class="mission-quote-src">— סנהדרין כ״ז</span>
       </div>
+
       <p class="mission-text">
-        כשיהודי אחד לומד תורה בתל אביב, ויהודי שני לומד בניו יורק, ושלישי בפריז —
-        הם לא לומדים לבד. הם לומדים יחד. כל דקת תורה מחברת אותנו.
-        כל שיעור שאתה מסיים — הוא חלק מסינפוניה גדולה של עם שלם שחוזר אל שורשיו.
+        כשיהודי לומד תורה בתל אביב, ויהודי לומד בניו יורק, ושלישי בפריז ורביעי בבואנוס איירס —
+        הם לא לומדים לבד. הם לומדים יחד.
+        כל דקת תורה מחברת אותנו — מעל גבולות, מעל מחלוקות, מעל פערים.
+        <br><br>
+        כל שיעור שאתה מסיים הוא חלק מסינפוניה גדולה של עם שלם שחוזר אל שורשיו.
+        ואתה — כן, אתה — חלק ממנה.
       </p>
-      <p class="mission-text" style="font-weight:600;color:var(--gold-dark);">
-        זו לא אפליקציה. זו תנועה. והיא מתחילה בך.
+
+      <div class="mission-highlight">
+        <span class="mission-highlight-icon">🤝</span>
+        <div>
+          <strong>כל מנוי הופך אותך לשותף בשני דברים בו זמנית:</strong><br>
+          לימוד תורה יומי לעצמך — וקיום מצוות צדקה לאחרים.<br>
+          <span style="color:var(--gold-dark);font-weight:700;">20% מכל תשלום נתרמים ישירות</span> — לישיבות לומדי תורה או למשפחות נזקקות, לפי בחירתך.
+          <br><small style="color:var(--stone);">אתה לא רק לומד. אתה גם נותן.</small>
+        </div>
+      </div>
+
+      <p class="mission-text" style="font-weight:700;color:var(--gold-dark);font-size:1.1rem;text-align:center;">
+        זו לא אפליקציה. זו תנועה של אחדות, תורה וצדקה.<br>והיא מתחילה בך — היום.
       </p>
-      <p class="mission-text" style="font-size:1.1rem;font-weight:700;text-align:center;color:var(--ink);border-top:1px solid rgba(201,168,76,0.3);padding-top:1.2rem;margin-top:0.5rem;">
-        🌍 המטרה שלנו: להגיע לכל יהודי בעולם — כולם, בלי יוצא מן הכלל.
+
+      <p class="mission-text" style="font-size:1.05rem;font-weight:700;text-align:center;color:var(--ink);border-top:1px solid rgba(201,168,76,0.3);padding-top:1.2rem;margin-top:0.5rem;">
+        🌍 המטרה שלנו: להגיע לכל אחד מ-15 מיליון יהודי העולם — כולם, בלי יוצא מן הכלל.
       </p>
+
     </div>
 
     <div class="hero-cta">
