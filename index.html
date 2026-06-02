@@ -1518,7 +1518,7 @@
 
   <!-- HERO -->
   <section class="hero">
-    <p class="hero-pasuk">״וְזָכַרְתָּ אֶת ה׳ אֱלֹקֶיךָ כִּי הוּא הַנֹּתֵן לְךָ כֹּחַ לַעֲשׂוֹת חָיִל״ — דברים ח׳, י״ח</p>
+    <p class="hero-pasuk" id="dailyPasuk">״וְזָכַרְתָּ אֶת ה׳ אֱלֹקֶיךָ כִּי הוּא הַנֹּתֵן לְךָ כֹּחַ לַעֲשׂוֹת חָיִל״ — דברים ח׳, י״ח</p>
     <span class="hero-tag">✨ 5 דקות תורה ביום משנות חיים</span>
     <h1>Time to Torah</h1><p class="hero-subtitle-he">עת לתורה</p>
 
@@ -1827,85 +1827,17 @@
   <section class="section categories-section">
     <div class="section-narrow">
       <h2 class="section-title">כל <span>הקטגוריות</span></h2>
-      <div class="categories-grid">
-        <div class="category-card" onclick="loadLesson('emunah')">
-          <span class="category-icon">🌟</span>
-          <div class="category-name">אמונה וביטחון</div>
-          <div class="category-desc">חיזוק האמונה</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('parasha')">
-          <span class="category-icon">📖</span>
-          <div class="category-name">פרשת השבוע</div>
-          <div class="category-desc">תובנות השבוע</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('mussar')">
-          <span class="category-icon">📜</span>
-          <div class="category-name">מוסר</div>
-          <div class="category-desc">שיפור המידות</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('mishna')">
-          <span class="category-icon">📚</span>
-          <div class="category-name">משנה יומית</div>
-          <div class="category-desc">לימוד ממוקד</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('gemara')">
-          <span class="category-icon">📖</span>
-          <div class="category-name">גמרא</div>
-          <div class="category-desc">גמרא נגישה</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('tehillim')">
-          <span class="category-icon">🙏</span>
-          <div class="category-name">תהילים</div>
-          <div class="category-desc">כוח המזמורים</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('halacha')">
-          <span class="category-icon">🕯️</span>
-          <div class="category-name">הלכה יומית</div>
-          <div class="category-desc">הלכה למעשה</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('tzadikim')">
-          <span class="category-icon">👑</span>
-          <div class="category-name">סיפורי צדיקים</div>
-          <div class="category-desc">השראה יומית</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('shalom_bayit')">
-          <span class="category-icon">🏠</span>
-          <div class="category-name">שלום בית</div>
-          <div class="category-desc">חיזוק הבית</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('parnasa')">
-          <span class="category-icon">💰</span>
-          <div class="category-name">פרנסה ותורה</div>
-          <div class="category-desc">הצלחה בעסקים</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card" onclick="loadLesson('chassidut')">
-          <span class="category-icon">✨</span>
-          <div class="category-name">חסידות</div>
-          <div class="category-desc">תורת הבעל שם טוב והחסידות</div>
-          <span class="badge-time">5 דק׳</span>
-        </div>
-        <div class="category-card category-special" onclick="loadTikkunKlali()">
-          <span class="category-icon">📿</span>
-          <div class="category-name">תיקון הכללי</div>
-          <div class="category-desc">י׳ מזמורי תהילים — רבי נחמן מברסלב</div>
-          <span class="badge-time">10 דק׳</span>
-        </div>
-        <div class="category-card category-special" onclick="loadTikkunChatzot()">
-          <span class="category-icon">🌙</span>
-          <div class="category-name">תיקון חצות</div>
-          <div class="category-desc">תפילת חצות הלילה על חורבן הבית</div>
-          <span class="badge-time">10 דק׳</span>
-        </div>
+
+      <!-- SEARCH + FILTER -->
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:1.5rem;">
+        <input id="catSearch" type="text" placeholder="🔍 חפש קטגוריה..." oninput="filterCats()"
+          style="padding:8px 16px;border-radius:20px;border:1px solid rgba(201,168,76,0.4);font-family:'Heebo',sans-serif;font-size:0.9rem;background:white;direction:rtl;min-width:200px;outline:none;box-shadow:var(--shadow-soft);">
+        <button onclick="filterCats('done')" id="filterDone" style="padding:8px 16px;border-radius:20px;border:1px solid rgba(201,168,76,0.4);background:white;font-family:'Heebo',sans-serif;font-size:0.85rem;cursor:pointer;">✅ נלמד</button>
+        <button onclick="filterCats('all')" id="filterAll" style="padding:8px 16px;border-radius:20px;border:none;background:var(--gold);color:white;font-family:'Heebo',sans-serif;font-size:0.85rem;cursor:pointer;">הכל</button>
+      </div>
+
+      <div class="categories-grid" id="learnCatGrid">
+        <!-- rendered dynamically by renderLearnCats() -->
       </div>
     </div>
   </section>
@@ -2566,6 +2498,7 @@
   // ─── FINISH LESSON / TOAST ───
   let streakCount = 7;
   let lessonFinished = false;
+  let currentLessonCat = null;
 
   // ─── STATS TRACKING ─────────────────────────────────────────
   function getStats() {
@@ -2608,9 +2541,11 @@
 
     s.lessons  += 1;
     s.minutes  += 5;
-    // Approximate donation: 20% of monthly plan (₪18.90) / 30 days ≈ ₪0.13 per lesson
     s.donated   = Math.round((s.donated + 0.13) * 100) / 100;
     saveStats(s);
+
+    // Mark category done + refresh learn grid
+    if (currentLessonCat) { markCatDone(currentLessonCat); renderLearnCats(); }
 
     streakCount = s.streak;
 
@@ -2730,6 +2665,7 @@
   navigate = function(page) {
     _origNavigate(page);
     if (page === 'profile') loadProfile();
+    if (page === 'learn')   renderLearnCats();
   };
 
   const navProxy = function(page) { navigate(page); };
@@ -3362,6 +3298,7 @@
   function loadLesson(cat) {
     ttsStop();
     lessonFinished = false;
+    currentLessonCat = cat;
     const btn = document.getElementById('finishBtn');
     if (btn) { btn.textContent = '✅ סיימתי ללמוד'; btn.style.background = ''; btn.style.cursor = ''; }
 
@@ -3723,6 +3660,133 @@
     navigate('lesson');
   }
 
+  // ─── DAILY PASUK — rotates every day ────────────────────────
+  const DAILY_PESUKIM = [
+    { text: '״וְזָכַרְתָּ אֶת ה׳ אֱלֹקֶיךָ כִּי הוּא הַנֹּתֵן לְךָ כֹּחַ לַעֲשׂוֹת חָיִל״', src: '— דברים ח׳, י״ח' },
+    { text: '״תּוֹרַת ה׳ תְּמִימָה מְשִׁיבַת נָפֶשׁ״', src: '— תהילים י״ט, ח׳' },
+    { text: '״אִם תָּשׁוּב עַד ה׳ אֱלֹקֶיךָ וְשָׁמַעְתָּ בְקֹלוֹ״', src: '— דברים ל׳, ב׳' },
+    { text: '״בְּכָל דְּרָכֶיךָ דָעֵהוּ וְהוּא יְיַשֵּׁר אֹרְחֹתֶיךָ״', src: '— משלי ג׳, ו׳' },
+    { text: '״שִׁוִּיתִי ה׳ לְנֶגְדִּי תָמִיד״', src: '— תהילים ט״ז, ח׳' },
+    { text: '״טוֹב לִי תוֹרַת פִּיךָ מֵאַלְפֵי זָהָב וָכָסֶף״', src: '— תהילים קי״ט, ע״ב' },
+    { text: '״עֵץ חַיִּים הִיא לַמַּחֲזִיקִים בָּהּ וְתֹמְכֶיהָ מְאֻשָּׁר״', src: '— משלי ג׳, י״ח' },
+  ];
+
+  function setDailyPasuk() {
+    const dayIndex = Math.floor(Date.now() / 86400000) % DAILY_PESUKIM.length;
+    const p = DAILY_PESUKIM[dayIndex];
+    const el = document.getElementById('dailyPasuk');
+    if (el) el.textContent = p.text + ' ' + p.src;
+  }
+
+  // ─── LEARN PAGE: category data + render + filter ─────────────
+  const CAT_DATA = [
+    { key:'emunah',      icon:'🌟', name:'אמונה וביטחון',   desc:'חיזוק האמונה וביטחון בה׳',        time:'5 דק׳', special:false },
+    { key:'parasha',     icon:'📖', name:'פרשת השבוע',       desc:'תובנות עמוקות מפרשת השבוע',        time:'5 דק׳', special:false },
+    { key:'mussar',      icon:'📜', name:'מוסר',              desc:'שיפור המידות וטוהר הנפש',           time:'5 דק׳', special:false },
+    { key:'mishna',      icon:'📚', name:'משנה יומית',        desc:'לימוד משנה ממוקד ומובן',            time:'5 דק׳', special:false },
+    { key:'gemara',      icon:'📖', name:'גמרא ב-5 דקות',    desc:'עמוד גמרא בגישה נגישה',             time:'5 דק׳', special:false },
+    { key:'tehillim',    icon:'🙏', name:'תהילים',            desc:'כוחם של מזמורי תהילים',             time:'5 דק׳', special:false },
+    { key:'halacha',     icon:'🕯️', name:'הלכה יומית',       desc:'הלכה למעשה בשפה ברורה',            time:'5 דק׳', special:false },
+    { key:'tzadikim',    icon:'👑', name:'סיפורי צדיקים',     desc:'סיפורים מעוררי השראה',              time:'5 דק׳', special:false },
+    { key:'shalom_bayit',icon:'🏠', name:'שלום בית',          desc:'חיזוק הבית היהודי',                 time:'5 דק׳', special:false },
+    { key:'parnasa',     icon:'💰', name:'פרנסה ותורה',       desc:'הצלחה כלכלית לפי התורה',           time:'5 דק׳', special:false },
+    { key:'chassidut',   icon:'✨', name:'חסידות',             desc:'תורת הבעל שם טוב',                  time:'5 דק׳', special:false },
+    { key:'tikkun_klali',icon:'📿', name:'תיקון הכללי',       desc:'י׳ מזמורים — רבי נחמן מברסלב',    time:'10 דק׳', special:true  },
+    { key:'tikkun_chatzot',icon:'🌙',name:'תיקון חצות',       desc:'תפילת חצות הלילה',                  time:'10 דק׳', special:true  },
+  ];
+
+  let _filterMode = 'all';
+  let _filterQuery = '';
+
+  function getDoneCats() {
+    try { return JSON.parse(localStorage.getItem('ttt_done_cats') || '[]'); } catch(e) { return []; }
+  }
+
+  function markCatDone(key) {
+    const done = getDoneCats();
+    if (!done.includes(key)) { done.push(key); localStorage.setItem('ttt_done_cats', JSON.stringify(done)); }
+  }
+
+  function renderLearnCats() {
+    const grid = document.getElementById('learnCatGrid');
+    if (!grid) return;
+    const done = getDoneCats();
+    const q = _filterQuery.toLowerCase();
+
+    const visible = CAT_DATA.filter(c => {
+      if (_filterMode === 'done' && !done.includes(c.key)) return false;
+      if (q && !c.name.includes(q) && !c.desc.includes(q)) return false;
+      return true;
+    });
+
+    if (visible.length === 0) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--stone);padding:2rem;">לא נמצאו קטגוריות</div>';
+      return;
+    }
+
+    grid.innerHTML = visible.map(c => {
+      const isDone = done.includes(c.key);
+      const doneBadge = isDone ? '<span style="position:absolute;top:8px;left:8px;background:#28a745;color:white;border-radius:10px;padding:2px 7px;font-size:0.68rem;">✅ נלמד</span>' : '';
+      const fn = c.special
+        ? (c.key === 'tikkun_klali' ? 'loadTikkunKlali()' : 'loadTikkunChatzot()')
+        : `loadLesson('${c.key}')`;
+      return `<div class="category-card${c.special ? ' category-special' : ''}" onclick="${fn}" style="position:relative;">
+        ${doneBadge}
+        <span class="category-icon">${c.icon}</span>
+        <div class="category-name">${c.name}</div>
+        <div class="category-desc">${c.desc}</div>
+        <span class="badge-time">${c.time}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function filterCats(mode) {
+    if (mode === 'done' || mode === 'all') {
+      _filterMode = mode;
+      document.getElementById('filterAll').style.background  = mode === 'all'  ? 'var(--gold)' : 'white';
+      document.getElementById('filterAll').style.color       = mode === 'all'  ? 'white' : '';
+      document.getElementById('filterAll').style.border      = mode === 'all'  ? 'none' : '1px solid rgba(201,168,76,0.4)';
+      document.getElementById('filterDone').style.background = mode === 'done' ? 'var(--gold)' : 'white';
+      document.getElementById('filterDone').style.color      = mode === 'done' ? 'white' : '';
+      document.getElementById('filterDone').style.border     = mode === 'done' ? 'none' : '1px solid rgba(201,168,76,0.4)';
+    } else {
+      _filterQuery = document.getElementById('catSearch')?.value || '';
+    }
+    renderLearnCats();
+  }
+
+  // ─── FEATURED LESSON on learn page — rotates daily ───────────
+  const FEATURED_CATS = ['emunah','parasha','mussar','mishna','gemara','tehillim','halacha','tzadikim','shalom_bayit','parnasa','chassidut'];
+  // Featured lesson titles + rabbis per category (for the learn-page hero card)
+  const FEATURED_META = {
+    emunah:      { title:'שער הביטחון — ביאור הרב יגאל כהן',      rabbi:'הרב יגאל כהן שליט״א' },
+    parasha:     { title:'שירת הים — בטחון שמעבר לנס',             rabbi:'הרב משה שפירא זצ"ל' },
+    mussar:      { title:'מסילת ישרים — חובת האדם בעולמו',          rabbi:'הרב חיים פרידלנדר זצ"ל' },
+    mishna:      { title:'אבות פרק א — שמעון הצדיק',                rabbi:'הרב עדין שטיינזלץ זצ"ל' },
+    gemara:      { title:'ברכות ז׳ — שלושת בקשות משה רבנו',         rabbi:'הרב אברהם סתיו שליט״א' },
+    tehillim:    { title:'מזמור כ״ג — ה׳ רועי לא אחסר',             rabbi:'הרב שלום ארוש שליט״א' },
+    halacha:     { title:'ברכת הנהנין — איך לאכול כיהודי',           rabbi:'הרב ישראל מאיר לאו שליט״א' },
+    tzadikim:    { title:'הבאבא סאלי — אור מרוקו לכל ישראל',        rabbi:'רבי ישראל אבוחצירא זצ"ל' },
+    shalom_bayit:{ title:'הבית היהודי — מקדש מעט',                   rabbi:'הרב זמיר כהן שליט״א' },
+    parnasa:     { title:'הצלחה כלכלית ויראת שמים',                  rabbi:'הרב בן ציון מוצפי שליט״א' },
+    chassidut:   { title:'הבעל שם טוב — ניצוץ אלוקי בכל נפש',       rabbi:'הרבי מלובביץ׳ זצ"ל' },
+  };
+
+  function setFeaturedLesson() {
+    const dayIdx = Math.floor(Date.now() / 86400000) % FEATURED_CATS.length;
+    const key = FEATURED_CATS[dayIdx];
+    const meta = FEATURED_META[key];
+    const catInfo = CAT_DATA.find(c => c.key === key);
+    if (!meta || !catInfo) return;
+    const card = document.querySelector('.featured-lesson-card');
+    if (!card) return;
+    card.querySelector('.category-badge').textContent = catInfo.icon + ' ' + catInfo.name;
+    card.querySelector('h2.lesson-title').textContent = meta.title;
+    card.querySelector('.rabbi-credit').textContent   = meta.rabbi;
+    const btn = card.querySelector('button.btn-primary');
+    if (btn) btn.onclick = () => { loadLesson(key); navigate('lesson'); };
+  }
+
   // Run on load
   window.addEventListener('load', () => {
     detectAndApply();
@@ -3747,6 +3811,13 @@
     if (document.getElementById('page-profile').classList.contains('active')) {
       loadProfile();
     }
+
+    // Daily rotating pasuk + featured lesson
+    setDailyPasuk();
+    setFeaturedLesson();
+
+    // Render learn page categories
+    renderLearnCats();
   });
 </script>
 </body>
