@@ -1863,8 +1863,13 @@
     <div class="lesson-page">
       <div class="back-btn" onclick="navigate('learn')">← חזרה ללימוד</div>
 
-      <div class="category-badge">🌟 אמונה וביטחון</div>
-      <h1 class="lesson-title" style="font-size:2rem;margin-top:0.75rem;">שער הביטחון — ביאור הרב יגאל כהן</h1>
+      <div id="categoryBadge" class="category-badge">🌟 אמונה וביטחון</div>
+      <div id="chapterInfo" style="font-size:0.95rem;font-weight:700;color:var(--gold-dark);margin-bottom:0.8rem;display:flex;align-items:center;gap:0.6rem;">
+        <span>📖 פרק 1 מתוך 7</span>
+        <div id="chapterProgress" style="flex:1;max-width:150px;height:4px;background:rgba(201,168,76,0.2);border-radius:2px;overflow:hidden;"><div style="height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));width:14%;border-radius:2px;transition:width 0.3s;"></div></div>
+      </div>
+      <h1 id="lessonMainTitle" class="lesson-title" style="font-size:2rem;margin-top:0.75rem;">שער הביטחון — ביאור הרב יגאל כהן</h1>
+      <div id="lessonSubtitle" style="font-size:1.1rem;color:var(--stone);margin-top:0.5rem;margin-bottom:1rem;">יסודות אמונה</div>
 
       <div class="rabbi-card">
         <div class="rabbi-avatar">יכ</div>
@@ -2502,6 +2507,7 @@
   let streakCount = 7;
   let lessonFinished = false;
   let currentLessonCat = null;
+  let currentChapterNum = 1;
 
   // ─── STATS TRACKING ─────────────────────────────────────────
   function getStats() {
@@ -2547,8 +2553,18 @@
     s.donated   = Math.round((s.donated + 0.13) * 100) / 100;
     saveStats(s);
 
-    // Mark category done + refresh learn grid
-    if (currentLessonCat) { markCatDone(currentLessonCat); renderLearnCats(); }
+    // Auto-advance to next chapter
+    const catData = CAT_DATA.find(c => c.key === currentLessonCat);
+    if (currentLessonCat && catData) {
+      const currentChapterIndex = catData.chapters.findIndex(ch => ch.id === currentChapterNum);
+      const nextChapterIndex = currentChapterIndex + 1;
+
+      if (nextChapterIndex >= catData.chapters.length) {
+        // All chapters done — mark category as complete
+        markCatDone(currentLessonCat);
+        renderLearnCats();
+      }
+    }
 
     streakCount = s.streak;
 
@@ -2560,11 +2576,25 @@
     const ll = document.getElementById('liveLessons');
     if (ll) ll.textContent = (2490 + s.lessons).toLocaleString('he-IL');
 
-    // Animate button → show "שיעור הבא" option
+    // Animate button → show "→ פרק הבא" or "✅ סיימת קטגוריה זו!"
     const btn = document.getElementById('finishBtn');
-    btn.textContent = '✅ שיעור הושלם!';
-    btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
-    btn.style.cursor = 'default';
+    const catData2 = CAT_DATA.find(c => c.key === currentLessonCat);
+    const currentChapterIndex = catData2 ? catData2.chapters.findIndex(ch => ch.id === currentChapterNum) : -1;
+    const nextChapterIndex = currentChapterIndex + 1;
+    const hasNextChapter = catData2 && nextChapterIndex < catData2.chapters.length;
+    const nextChapterID = hasNextChapter ? catData2.chapters[nextChapterIndex].id : null;
+
+    if (hasNextChapter && nextChapterID) {
+      btn.textContent = '→ פרק הבא';
+      btn.style.background = 'linear-gradient(135deg, #4a90e2, #2d5aa6)';
+      btn.style.cursor = 'pointer';
+      btn.onclick = () => { lessonFinished = false; loadLesson(currentLessonCat, nextChapterID); };
+    } else {
+      btn.textContent = '✅ סיימת קטגוריה זו!';
+      btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+      btn.style.cursor = 'default';
+      btn.onclick = null;
+    }
 
     // Show "next lesson" nudge
     const wrapper = document.querySelector('.finish-btn-wrapper');
@@ -2572,12 +2602,16 @@
       const nudge = document.createElement('div');
       nudge.id = 'nextLessonNudge';
       nudge.style.cssText = 'margin-top:1rem;text-align:center;';
+      let nextButtonHtml = '';
+      if (!hasNextChapter) {
+        nextButtonHtml = `<button class="btn-outline btn-sm" onclick="navigate('learn')" style="margin-left:8px;">📚 קטגוריה חדשה</button>`;
+      }
       nudge.innerHTML = `
         <div style="font-size:0.9rem;color:var(--stone);margin-bottom:0.6rem;">
           🔥 רצף: <strong style="color:var(--gold)">${s.streak} יום</strong> &nbsp;|&nbsp;
           📚 שיעורים: <strong style="color:var(--gold)">${s.lessons}</strong>
         </div>
-        <button class="btn-outline btn-sm" onclick="navigate('learn')" style="margin-left:8px;">📚 שיעור נוסף</button>
+        ${nextButtonHtml}
         <button class="btn-outline btn-sm" onclick="navigate('profile')">👤 הפרופיל שלי</button>
       `;
       wrapper.appendChild(nudge);
@@ -3326,26 +3360,69 @@
       });
   }
 
-  // ─── LOAD LESSON BY CATEGORY ────────────────────────────────
-  function loadLesson(cat) {
+  // ─── LOAD LESSON BY CATEGORY + CHAPTER ──────────────────────
+  function loadLesson(cat, chapterId) {
     ttsStop();
     lessonFinished = false;
     currentLessonCat = cat;
+
+    // Find category
+    const catData = CAT_DATA.find(c => c.key === cat);
+    if (!catData) return;
+
+    // If no chapter specified, load first one
+    const chapter = chapterId || catData.chapters[0].id;
+    const currentChapterData = catData.chapters.find(ch => ch.id === chapter);
+
+    // Store current progress for this category
+    const progressKey = `ttt_cat_${cat}_progress`;
+    localStorage.setItem(progressKey, chapter);
+
     const btn = document.getElementById('finishBtn');
     if (btn) { btn.textContent = '✅ סיימתי ללמוד'; btn.style.background = ''; btn.style.cursor = ''; }
 
+    // Get category data for current lesson
+    const currentCat = CAT_DATA.find(c => c.key === cat);
+    let chapterNum = chapterId || (currentCat ? currentCat.chapters[0].id : 1);
+    currentChapterNum = chapterNum;
+
+    // Update chapter info display with progress bar
+    if (currentCat && currentChapterData) {
+      const totalChapters = currentCat.chapters.length;
+      const currentIndex = currentCat.chapters.findIndex(ch => ch.id === chapterNum);
+      const progressPercent = ((currentIndex + 1) / totalChapters) * 100;
+
+      const chapterDisplay = document.getElementById('chapterInfo');
+      if (chapterDisplay) {
+        chapterDisplay.innerHTML = `
+          <span>📖 פרק ${currentIndex + 1} מתוך ${totalChapters}</span>
+          <div style="flex:1;max-width:150px;height:4px;background:rgba(201,168,76,0.2);border-radius:2px;overflow:hidden;">
+            <div style="height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));width:${progressPercent}%;border-radius:2px;transition:width 0.3s;"></div>
+          </div>
+        `;
+      }
+
+      // Update category badge
+      const badge = document.getElementById('categoryBadge');
+      if (badge) badge.textContent = `${currentCat.icon} ${currentCat.name}`;
+
+      // Update chapter title and subtitle
+      const titleEl = document.getElementById('lessonMainTitle');
+      const subtitleEl = document.getElementById('lessonSubtitle');
+      if (titleEl) titleEl.textContent = currentChapterData.title;
+      if (subtitleEl) subtitleEl.textContent = currentChapterData.subtitle;
+    }
+
+    // Lesson content by category + chapter
     switch (cat) {
 
-      case 'emunah':
-        setLessonPage(
-          '🌟 אמונה וביטחון',
-          '״כי ה׳ אלוקיך מביאך אל ארץ טובה״ — אמונה ביומיום',
-          'הרב יגאל כהן שליט״א',
-          'מגדולי המחזקים בדורנו. מרצה ומחבר בנושאי אמונה, ביטחון ושמחת החיים. שיעוריו מגיעים למיליוני יהודים ברחבי העולם.',
-          'יכ',
-          '🎧 שיעור אמונה וביטחון — הרב יגאל כהן שליט״א',
-          `
-          <p>אחת השאלות הגדולות שכל אדם שואל בשקט ליבו היא: "אם ה׳ אוהב אותי — למה קשה לי?" התשובה, לפי ספר חובות הלבבות של רבנו בחיי אבן פקודה, נמצאת בהבנת מהות הביטחון. הביטחון האמיתי אינו אמונה שהכל יהיה קל — אלא ידיעה עמוקה שהכל מכוון לטובה.</p>
+      case 'emunah': {
+        const chapters = {
+          1: {
+            title: '״כי ה׳ אלוקיך מביאך אל ארץ טובה״ — הקדמה לביטחון',
+            subtitle: 'יסודות אמונה',
+            content: `
+            <p>אחת השאלות הגדולות שכל אדם שואל בשקט ליבו היא: "אם ה׳ אוהב אותי — למה קשה לי?" התשובה, לפי ספר חובות הלבבות של רבנו בחיי אבן פקודה, נמצאת בהבנת מהות הביטחון. הביטחון האמיתי אינו אמונה שהכל יהיה קל — אלא ידיעה עמוקה שהכל מכוון לטובה.</p>
 
           <div class="highlight">
             ״הבוטח בה׳ — חופשי מכל דאגה, כי הוא יודע שהמנהיג יודע, יכול, וחפץ בטובתו״
@@ -3710,22 +3787,262 @@
     if (el) el.textContent = p.text + ' ' + p.src;
   }
 
-  // ─── LEARN PAGE: category data + render + filter ─────────────
-  const CAT_DATA = [
-    { key:'emunah',      icon:'🌟', name:'אמונה וביטחון',   desc:'חיזוק האמונה וביטחון בה׳',        time:'5 דק׳', special:false },
-    { key:'parasha',     icon:'📖', name:'פרשת השבוע',       desc:'תובנות עמוקות מפרשת השבוע',        time:'5 דק׳', special:false },
-    { key:'mussar',      icon:'📜', name:'מוסר',              desc:'שיפור המידות וטוהר הנפש',           time:'5 דק׳', special:false },
-    { key:'mishna',      icon:'📚', name:'משנה יומית',        desc:'לימוד משנה ממוקד ומובן',            time:'5 דק׳', special:false },
-    { key:'gemara',      icon:'📖', name:'גמרא ב-5 דקות',    desc:'עמוד גמרא בגישה נגישה',             time:'5 דק׳', special:false },
-    { key:'tehillim',    icon:'🙏', name:'תהילים',            desc:'כוחם של מזמורי תהילים',             time:'5 דק׳', special:false },
-    { key:'halacha',     icon:'🕯️', name:'הלכה יומית',       desc:'הלכה למעשה בשפה ברורה',            time:'5 דק׳', special:false },
-    { key:'tzadikim',    icon:'👑', name:'סיפורי צדיקים',     desc:'סיפורים מעוררי השראה',              time:'5 דק׳', special:false },
-    { key:'shalom_bayit',icon:'🏠', name:'שלום בית',          desc:'חיזוק הבית היהודי',                 time:'5 דק׳', special:false },
-    { key:'parnasa',     icon:'💰', name:'פרנסה ותורה',       desc:'הצלחה כלכלית לפי התורה',           time:'5 דק׳', special:false },
-    { key:'chassidut',   icon:'✨', name:'חסידות',             desc:'תורת הבעל שם טוב',                  time:'5 דק׳', special:false },
-    { key:'tikkun_klali',icon:'📿', name:'תיקון הכללי',       desc:'י׳ מזמורים — רבי נחמן מברסלב',    time:'10 דק׳', special:true  },
-    { key:'tikkun_chatzot',icon:'🌙',name:'תיקון חצות',       desc:'תפילת חצות הלילה',                  time:'10 דק׳', special:true  },
-  ];
+  // ─── LEARN PAGE: category data with chapters ──────────────────
+  // New structure: each category has chapters, not just a single lesson
+const CAT_DATA = [
+  {
+    key:'emunah',
+    icon:'🌟',
+    name:'אמונה וביטחון',
+    rabbi:'הרב יגאל כהן שליט״א',
+    source:'חובות הלבבות / הרב יגאל כהן',
+    desc:'חיזוק האמונה וביטחון בה׳',
+    special:false,
+    chapters:[
+      { id:1, title:'הקדמה לביטחון', subtitle:'יסודות אמונה' },
+      { id:2, title:'יסודות הביטחון', subtitle:'חמישה עמודים' },
+      { id:3, title:'ביטחון בפועל', subtitle:'עבודת הלב' },
+      { id:4, title:'הביטחון בעת קושי', subtitle:'כשהדרך אפלה' },
+      { id:5, title:'ביטחון בפרנסה', subtitle:'ה׳ יספק' },
+      { id:6, title:'ביטחון בבריאות', subtitle:'בחסדיו הרבים' },
+      { id:7, title:'סגולת הביטחון', subtitle:'שלווה אמיתית' },
+    ]
+  },
+  {
+    key:'parasha',
+    icon:'📖',
+    name:'פרשת השבוע',
+    rabbi:'הרב משה שפירא זצ״ל',
+    source:'פרשיות התורה / ביאורים עמוקים',
+    desc:'תובנות עמוקות מפרשת השבוע',
+    special:false,
+    chapters:[
+      { id:1, title:'שער ההקדמה', subtitle:'איך לקרוא פרשה' },
+      { id:2, title:'נימוקי הפרשה', subtitle:'מדוע בסדר הזה' },
+      { id:3, title:'הרמזים המתחבאים', subtitle:'מדרשי חז״ל' },
+      { id:4, title:'הקשר לדורנו', subtitle:'שיעורים ליומיום' },
+      { id:5, title:'המצוות בפרשה', subtitle:'בעובדה ובהלכה' },
+      { id:6, title:'הנאריים בעומקם', subtitle:'למבינה קול' },
+      { id:7, title:'סיום בקשר', subtitle:'מה למדנו' },
+    ]
+  },
+  {
+    key:'mussar',
+    icon:'📜',
+    name:'מוסר',
+    rabbi:'הרב חיים פרידלנדר זצ״ל',
+    source:'מסילת ישרים / רמח״ל',
+    desc:'שיפור המידות וטוהר הנפש',
+    special:false,
+    chapters:[
+      { id:1, title:'מה זה מוסר', subtitle:'הערנות מדרך החטא' },
+      { id:2, title:'שער הזהירות', subtitle:'ראיית עצמך כמו שאתה' },
+      { id:3, title:'שער התשובה', subtitle:'החזרה לשורש' },
+      { id:4, title:'שער הצניעות', subtitle:'דרך הצנע' },
+      { id:5, title:'שער ההנצלות', subtitle:'ניצולי קללה' },
+      { id:6, title:'שער הסגולות', subtitle:'הסוד של המידות' },
+      { id:7, title:'שער הקדושה', subtitle:'מעלות הצדיק' },
+    ]
+  },
+  {
+    key:'mishna',
+    icon:'📚',
+    name:'משנה יומית',
+    rabbi:'הרב אליהו לוי זצ״ל',
+    source:'משניות / ביאורים ויישום',
+    desc:'לימוד משנה ממוקד ומובן',
+    special:false,
+    chapters:[
+      { id:1, title:'מהות המשנה', subtitle:'קול קדום' },
+      { id:2, title:'מסכת אבות — פרק א׳', subtitle:'שרשי התורה' },
+      { id:3, title:'מסכת אבות — פרק ב׳', subtitle:'דרך החיים' },
+      { id:4, title:'מסכת ברכות — בחירה', subtitle:'כוח הדיבור' },
+      { id:5, title:'משניות בהלכה מעשית', subtitle:'מהספר לחיים' },
+      { id:6, title:'משניות בחזקוני', subtitle:'העמקה וניתוח' },
+      { id:7, title:'שימוש בלמידה היומית', subtitle:'נתיב הצמיחה' },
+    ]
+  },
+  {
+    key:'gemara',
+    icon:'📖',
+    name:'גמרא ב-5 דקות',
+    rabbi:'הרב אברהם אבנר שליט״א',
+    source:'גמרא בבלית / ביאורים נגישים',
+    desc:'עמוד גמרא בגישה נגישה',
+    special:false,
+    chapters:[
+      { id:1, title:'סדר הלימוד של גמרא', subtitle:'מבנה ודרך' },
+      { id:2, title:'גמרא מסכת ברכות — דף ב״', subtitle:'מחלוקת בלל לישנא' },
+      { id:3, title:'גמרא מסכת שבת — דף ל״א', subtitle:'עמוד קדוש' },
+      { id:4, title:'גמרא מסכת קידושין — בחירות', subtitle:'עומק הדיון' },
+      { id:5, title:'דדוקציה וביסוס', subtitle:'לוגיקה של חז״ל' },
+      { id:6, title:'הלכה וגמרא בשילוב', subtitle:'מהדיון לפועל' },
+      { id:7, title:'טיפים להוא גמרא בעצמך', subtitle:'דרך מפוארת' },
+    ]
+  },
+  {
+    key:'tehillim',
+    icon:'🙏',
+    name:'תהילים',
+    rabbi:'הרב יצחק גינזבורג שליט״א',
+    source:'כתבי הקודש / ביאורים חדשים',
+    desc:'כוחם של מזמורי תהילים',
+    special:false,
+    chapters:[
+      { id:1, title:'מהות תהילים', subtitle:'קול של דוד' },
+      { id:2, title:'מזמור א׳ — שרש של צדיקים', subtitle:'בחירה חיוובית' },
+      { id:3, title:'מזמור כ״ג — ה׳ רועי', subtitle:'שקט בנשמה' },
+      { id:4, title:'מזמור קל״א — שלום בבית', subtitle:'הרמוניה של משפחה' },
+      { id:5, title:'מזמורים של תפילה', subtitle:'אל שומע קול' },
+      { id:6, title:'מזמורים של תשבחת', subtitle:'שיר הנשמה' },
+      { id:7, title:'תהילים בעבודה יומית', subtitle:'כוח לחיים' },
+    ]
+  },
+  {
+    key:'halacha',
+    icon:'🕯️',
+    name:'הלכה יומית',
+    rabbi:'הרב אליהו בן דהן שליט״א',
+    source:'שולחן ערוך / הלכות למעשה',
+    desc:'הלכה למעשה בשפה ברורה',
+    special:false,
+    chapters:[
+      { id:1, title:'סדר הדיו / אור הלכה', subtitle:'הקדמה להלכה' },
+      { id:2, title:'הלכות בעבודת ה׳', subtitle:'תפילה וברכה' },
+      { id:3, title:'הלכות שבת', subtitle:'קדושת יום' },
+      { id:4, title:'הלכות אבלות', subtitle:'דרך הנחמה' },
+      { id:5, title:'הלכות כלים וטהרה', subtitle:'קדושה בפרטים' },
+      { id:6, title:'הלכות בינה-אדם-לחברו', subtitle:'צדק ומשפט' },
+      { id:7, title:'פעולה יומית הלכתית', subtitle:'חיים בעמקות' },
+    ]
+  },
+  {
+    key:'tzadikim',
+    icon:'👑',
+    name:'סיפורי צדיקים',
+    rabbi:'הרב ישראל מצל זצ״ל',
+    source:'סיפורים מסורתיים / מעשיות אמיתיות',
+    desc:'סיפורים מעוררי השראה',
+    special:false,
+    chapters:[
+      { id:1, title:'הרבי מקוצק', subtitle:'מידות קודשות' },
+      { id:2, title:'הבעל שם טוב', subtitle:'ייסוד החסידות' },
+      { id:3, title:'הבעל שם טוב וקצר הדורות', subtitle:'שיתוף פעולה אלוקי' },
+      { id:4, title:'הגר״א מוילנא', subtitle:'דרך של מדע' },
+      { id:5, title:'הרב קוק הראשון', subtitle:'חזון בתחיה' },
+      { id:6, title:'צדיקים בעת אנוש', subtitle:'אור בחושך' },
+      { id:7, title:'השראה מהצדיקים', subtitle:'בנייה של נשמה' },
+    ]
+  },
+  {
+    key:'shalom_bayit',
+    icon:'🏠',
+    name:'שלום בית',
+    rabbi:'הרב זמיר כהן שליט״א',
+    source:'ארגון הידברות / חיי הזוגיות',
+    desc:'חיזוק הבית היהודי',
+    special:false,
+    chapters:[
+      { id:1, title:'הקדמה לשלום בית', subtitle:'בניין הבית' },
+      { id:2, title:'אמונה בבן הזוג', subtitle:'ראיית הטוב' },
+      { id:3, title:'תקשורת אמיתית', subtitle:'שמיעה עמוקה' },
+      { id:4, title:'הסכסוכים וטיבם', subtitle:'כל ריב הוא הוראה' },
+      { id:5, title:'הכבוד בביתו', subtitle:'מלך בבית' },
+      { id:6, title:'המינימום לשלום', subtitle:'מה באמת חשוב' },
+      { id:7, title:'בנייה של אהבה', subtitle:'בית לנצח' },
+    ]
+  },
+  {
+    key:'parnasa',
+    icon:'💰',
+    name:'פרנסה ותורה',
+    rabbi:'הרב בן ציון מוצפי שליט״א',
+    source:'הלכות מעשיות / ברכה בעבודה',
+    desc:'הצלחה כלכלית לפי התורה',
+    special:false,
+    chapters:[
+      { id:1, title:'מנתקות של עבודה', subtitle:'אמת וצדק' },
+      { id:2, title:'השתדלות וביטחון', subtitle:'הדרך של תורה' },
+      { id:3, title:'ברכה בעבודה', subtitle:'כיצד תשלם הברכה' },
+      { id:4, title:'גזל וחמס', subtitle:'כלים קדושים' },
+      { id:5, title:'הכנעת הרצון', subtitle:'סוד ההצלחה' },
+      { id:6, title:'מחתרות הרוח', subtitle:'כלים לברכה' },
+      { id:7, title:'פרנסה נצחית', subtitle:'חיים מעשיים' },
+    ]
+  },
+  {
+    key:'chassidut',
+    icon:'✨',
+    name:'חסידות',
+    rabbi:'הרב יהודה לייב חסיד שליט״א',
+    source:'ליקוטי מוהר״ן / תורת הבעל שם טוב',
+    desc:'תורת הבעל שם טוב והחסידות',
+    special:false,
+    chapters:[
+      { id:1, title:'מהות החסידות', subtitle:'השגת יסוד הדברים' },
+      { id:2, title:'ליקוטי מוהר״ן — פרק א׳', subtitle:'השאלה והתשובה' },
+      { id:3, title:'ליקוטי מוהר״ן — פרק ב׳', subtitle:'זבחא דאברהם' },
+      { id:4, title:'ליקוטי מוהר״ן — פרק ג׳', subtitle:'תחינת הנשמה' },
+      { id:5, title:'ליקוטי עצות — א׳', subtitle:'טיפול בדעות רעות' },
+      { id:6, title:'ליקוטי עצות — ב׳', subtitle:'דרכי החיים' },
+      { id:7, title:'אמונת הצדיקים', subtitle:'מדרגה עליונה' },
+    ]
+  },
+  {
+    key:'taniah',
+    icon:'📕',
+    name:'תניא',
+    rabbi:'הרב אברגיל שליט״א',
+    source:'תניא / הרב שניאור זלמן מלאדי',
+    desc:'שני נשמות — אדם בעומקו',
+    special:false,
+    chapters:[
+      { id:1, title:'מהות התניא', subtitle:'קדמונית ועדכנית' },
+      { id:2, title:'שני נשמות בנושא', subtitle:'הטבעת הנשמה' },
+      { id:3, title:'הנשמה הנוספת', subtitle:'מצבי הנשמה' },
+      { id:4, title:'היצר הטוב והרע', subtitle:'קרב בתוך האדם' },
+      { id:5, title:'הדדיות השקפה וריגשים', subtitle:'איזון החיים' },
+      { id:6, title:'דרך תשובה בתניא', subtitle:'שובך אל אבי' },
+      { id:7, title:'עבודה יומית בתניא', subtitle:'מדרגת הצדיק' },
+    ]
+  },
+  {
+    key:'tikkun_klali',
+    icon:'📿',
+    name:'תיקון הכללי',
+    rabbi:'רבי נחמן מברסלב זצ״ל',
+    source:'י׳ מזמורים תיקון עומק',
+    desc:'י׳ מזמורים — רבי נחמן מברסלב',
+    special:true,
+    chapters:[
+      { id:1, title:'מהות התיקון הכללי', subtitle:'אני מדגיל לכם סגולה' },
+      { id:2, title:'מזמור טז׳ — המגן שלי', subtitle:'הבחנה בחושך' },
+      { id:3, title:'מזמור לב׳ — לא תשגיח', subtitle:'השעה של גדולה' },
+      { id:4, title:'מזמור מא׳ — בעם אני מתחרפן', subtitle:'הגלות הנסתרת' },
+      { id:5, title:'מזמור מב׳ — מי הם אויביי', subtitle:'קרב פנימי' },
+      { id:6, title:'מזמורים נט׳-קנ׳', subtitle:'השלמה וגאולה' },
+      { id:7, title:'פולאק היומי של התיקון', subtitle:'עבודה קדושה' },
+    ]
+  },
+  {
+    key:'tikkun_chatzot',
+    icon:'🌙',
+    name:'תיקון חצות',
+    rabbi:'רבי יצחק לוריא זצ״ל',
+    source:'קבלה / על קריעת הלל',
+    desc:'תפילת חצות הלילה על חורבן הבית',
+    special:true,
+    chapters:[
+      { id:1, title:'מהות תיקון חצות', subtitle:'קולות הלילה' },
+      { id:2, title:'הקיונות חצות בקבלה', subtitle:'סודות עמוקים' },
+      { id:3, title:'קינה על חורבן ירושלים', subtitle:'בכי של רוח' },
+      { id:4, title:'שירת דוד בתיקון', subtitle:'קול הנשמה' },
+      { id:5, title:'התפילה האישית בחצות', subtitle:'מדברים ישירים' },
+      { id:6, title:'השקפה על הגלות', subtitle:'הבנת המטרה' },
+      { id:7, title:'בחזרה אל הגאולה', subtitle:'סוד ההתיקון' },
+    ]
+  },
+];
 
   let _filterMode = 'all';
   let _filterQuery = '';
