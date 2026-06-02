@@ -2820,11 +2820,12 @@
 
   // ─── TEXT TO SPEECH ─────────────────────────────────────────
   let ttsUtterance = null;
-  let ttsLang = 'he-IL';
-  let ttsRate = 0.9;
-  let ttsSentences = [];
-  let ttsCurrent = 0;
-  let ttsPlaying = false;
+  let ttsLang      = 'he-IL';
+  let ttsRate      = 0.9;
+  let ttsPlaying   = false;
+  let ttsFullText  = '';
+  let ttsCharIndex = 0;   // last known char position (for pause/resume)
+  let ttsPaused    = false;
 
   function getLessonText() {
     const content = document.querySelector('#page-lesson .lesson-content');
@@ -2834,44 +2835,49 @@
 
   function ttsToggle() {
     if (ttsPlaying) {
-      window.speechSynthesis.pause();
+      // PAUSE: save position, cancel utterance
+      window.speechSynthesis.cancel();
       ttsPlaying = false;
-      document.getElementById('ttsPlayBtn').textContent = '▶ המשך הקראה';
+      ttsPaused  = true;
+      document.getElementById('ttsPlayBtn').textContent = '▶ המשך מאותה נקודה';
       document.getElementById('ttsPlayBtn').classList.remove('playing');
+    } else if (ttsPaused) {
+      // RESUME from saved char position
+      ttsStartFrom(ttsCharIndex);
     } else {
-      if (window.speechSynthesis.paused) {
-        window.speechSynthesis.resume();
-        ttsPlaying = true;
-        document.getElementById('ttsPlayBtn').textContent = '⏸ השהה';
-        document.getElementById('ttsPlayBtn').classList.add('playing');
-      } else {
-        ttsStart();
-      }
+      // Fresh start
+      ttsCharIndex = 0;
+      ttsPaused    = false;
+      ttsFullText  = getLessonText();
+      ttsStartFrom(0);
     }
   }
 
-  function ttsStart() {
+  function ttsStartFrom(charOffset) {
     if (!('speechSynthesis' in window)) {
       showToast('הדפדפן שלך אינו תומך בהקראה. נסה Chrome או Safari.');
       return;
     }
     window.speechSynthesis.cancel();
-    const text = getLessonText();
+
+    if (!ttsFullText) ttsFullText = getLessonText();
+    const text = ttsFullText.slice(charOffset);
     if (!text) return;
 
-    ttsUtterance = new SpeechSynthesisUtterance(text);
-    ttsUtterance.lang = ttsLang;
-    ttsUtterance.rate = ttsRate;
-    ttsUtterance.pitch = 1;
+    ttsUtterance          = new SpeechSynthesisUtterance(text);
+    ttsUtterance.lang     = ttsLang;
+    ttsUtterance.rate     = ttsRate;
+    ttsUtterance.pitch    = 1;
 
-    // Progress tracking
-    const words = text.split(' ');
+    // Track position relative to FULL text
     ttsUtterance.onboundary = (e) => {
       if (e.name === 'word') {
-        const pct = Math.round((e.charIndex / text.length) * 100);
-        const fill = document.getElementById('ttsProgressFill');
+        const absIndex = charOffset + e.charIndex;
+        ttsCharIndex   = absIndex;          // save for next pause
+        const pct = Math.round((absIndex / ttsFullText.length) * 100);
+        const fill  = document.getElementById('ttsProgressFill');
         const label = document.getElementById('ttsProgressLabel');
-        if (fill) fill.style.width = pct + '%';
+        if (fill)  fill.style.width  = pct + '%';
         if (label) label.textContent = `${pct}% הושלם`;
       }
     };
@@ -2881,37 +2887,59 @@
       showToast('✅ ההקראה הסתיימה! כל הכבוד שלמדת בדרך 🎉');
     };
 
-    ttsUtterance.onerror = () => ttsStop();
+    ttsUtterance.onerror = (e) => {
+      if (e.error !== 'interrupted') ttsStop();
+    };
 
     window.speechSynthesis.speak(ttsUtterance);
     ttsPlaying = true;
+    ttsPaused  = false;
 
     document.getElementById('ttsPlayBtn').textContent = '⏸ השהה';
     document.getElementById('ttsPlayBtn').classList.add('playing');
-    document.getElementById('ttsStopBtn').style.display = 'inline-block';
-    document.getElementById('ttsProgress').style.display = 'block';
-    document.getElementById('ttsProgressFill').style.width = '0%';
-    document.getElementById('ttsProgressLabel').textContent = 'מתחיל...';
+    document.getElementById('ttsStopBtn').style.display   = 'inline-block';
+    document.getElementById('ttsProgress').style.display  = 'block';
+
+    // Restore progress bar to correct position
+    if (ttsFullText.length > 0) {
+      const pct = Math.round((charOffset / ttsFullText.length) * 100);
+      const fill  = document.getElementById('ttsProgressFill');
+      const label = document.getElementById('ttsProgressLabel');
+      if (fill)  fill.style.width  = pct + '%';
+      if (label) label.textContent = pct > 0 ? `${pct}% — ממשיך...` : 'מתחיל...';
+    }
   }
 
   function ttsStop() {
     window.speechSynthesis.cancel();
-    ttsPlaying = false;
+    ttsPlaying   = false;
+    ttsPaused    = false;
+    ttsCharIndex = 0;
+    ttsFullText  = '';
     document.getElementById('ttsPlayBtn').textContent = '▶ התחל הקראה';
     document.getElementById('ttsPlayBtn').classList.remove('playing');
-    document.getElementById('ttsStopBtn').style.display = 'none';
+    document.getElementById('ttsStopBtn').style.display  = 'none';
     document.getElementById('ttsProgress').style.display = 'none';
   }
 
   function updateTtsSpeed(val) {
     ttsRate = parseFloat(val);
     document.getElementById('ttsSpeedVal').textContent = val + '×';
-    if (ttsPlaying) { ttsStop(); ttsStart(); }
+    // Restart from current position with new speed
+    if (ttsPlaying || ttsPaused) {
+      const savedPos = ttsCharIndex;
+      ttsPlaying = false; ttsPaused = false;
+      ttsStartFrom(savedPos);
+    }
   }
 
   function ttsChangeLang(lang) {
     ttsLang = lang;
-    if (ttsPlaying) { ttsStop(); ttsStart(); }
+    if (ttsPlaying || ttsPaused) {
+      const savedPos = ttsCharIndex;
+      ttsPlaying = false; ttsPaused = false;
+      ttsStartFrom(savedPos);
+    }
   }
 
   function setLessonPage(catText, titleText, rabbiText, bioText, avatarText, audioText, htmlContent) {
@@ -2935,7 +2963,8 @@
     const nudge = document.getElementById('nextLessonNudge');
     if (nudge) nudge.remove();
 
-    // Stop any running TTS
+    // Reset TTS for new lesson
+    ttsCharIndex = 0; ttsFullText = ''; ttsPlaying = false; ttsPaused = false;
     if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
 
