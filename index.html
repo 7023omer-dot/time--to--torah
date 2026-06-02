@@ -395,6 +395,43 @@
       margin: 0 auto;
     }
 
+    .ask-topic-btn {
+      background: white;
+      border: 1.5px solid rgba(201,168,76,0.4);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.88rem;
+      color: var(--stone);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ask-topic-btn:hover, .ask-topic-btn.active {
+      background: var(--gold);
+      color: white;
+      border-color: var(--gold);
+    }
+    .ask-example-btn {
+      background: var(--parchment);
+      border: 1.5px solid rgba(201,168,76,0.3);
+      border-radius: var(--radius-sm);
+      padding: 0.6rem 1rem;
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.92rem;
+      color: var(--ink);
+      cursor: pointer;
+      text-align: right;
+      transition: all 0.2s;
+    }
+    .ask-example-btn:hover {
+      border-color: var(--gold);
+      background: white;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(1.1); }
+    }
+
     .category-card {
       background: var(--parchment);
       border: 1.5px solid rgba(201,168,76,0.18);
@@ -1499,6 +1536,7 @@
   <ul class="navbar-links">
     <li><a onclick="navigate('home')" id="nav-home" class="active">בית</a></li>
     <li><a onclick="navigate('learn')" id="nav-learn">לימוד</a></li>
+    <li><a onclick="navigate('ask')" id="nav-ask">🤖 שאל</a></li>
     <li><a onclick="navigate('subscribe')" id="nav-subscribe">מנוי</a></li>
     <li><a onclick="navigate('profile')" id="nav-profile">פרופיל</a></li>
   </ul>
@@ -2103,6 +2141,81 @@
 <!-- ══════════════════════════════════════════
      PAGE 5: PROFILE
 ══════════════════════════════════════════ -->
+<!-- ══════════════════════════════════════════
+     PAGE — שאל שאלה (AI)
+═══════════════════════════════════════════ -->
+<div id="page-ask" class="page">
+  <div style="background:var(--parchment);min-height:100vh;padding:2rem 0;">
+    <div style="max-width:720px;margin:0 auto;padding:0 1.2rem;">
+
+      <!-- כותרת -->
+      <div style="text-align:center;margin-bottom:2rem;">
+        <div style="font-size:2.8rem;margin-bottom:0.5rem;">🤖</div>
+        <h1 style="font-family:'Frank Ruhl Libre',serif;font-size:2rem;color:var(--ink);margin-bottom:0.4rem;">שאל שאלה בתורה</h1>
+        <p style="color:var(--stone);font-size:1rem;">שאל שאלה בהלכה, פרשה, חסידות או כל נושא יהודי — ותקבל תשובה מפורטת ממקורות</p>
+      </div>
+
+      <!-- API Key setup (חד פעמי) -->
+      <div id="askApiSetup" style="display:none;background:white;border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;border:1.5px solid rgba(201,168,76,0.35);box-shadow:var(--shadow-soft);">
+        <div style="font-weight:700;margin-bottom:0.5rem;color:var(--ink);">🔑 הגדרת מפתח API</div>
+        <p style="color:var(--stone);font-size:0.9rem;margin-bottom:1rem;">כדי להפעיל את ה-AI תצטרך מפתח API מ-Anthropic. ניתן להשיג בחינם בכתובת console.anthropic.com. המפתח נשמר רק אצלך במכשיר.</p>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <input type="password" id="apiKeyInput" placeholder="sk-ant-..." style="flex:1;min-width:200px;padding:0.65rem 1rem;border:1.5px solid rgba(201,168,76,0.4);border-radius:var(--radius-sm);font-size:0.95rem;font-family:'Heebo',sans-serif;" />
+          <button onclick="saveApiKey()" style="background:var(--gold);color:white;border:none;border-radius:var(--radius-sm);padding:0.65rem 1.4rem;font-family:'Heebo',sans-serif;font-size:0.95rem;font-weight:700;cursor:pointer;">שמור</button>
+        </div>
+      </div>
+
+      <!-- טופס שאלה -->
+      <div style="background:white;border-radius:var(--radius);padding:1.5rem;margin-bottom:1.5rem;border:1.5px solid rgba(201,168,76,0.35);box-shadow:var(--shadow-soft);">
+
+        <!-- נושא -->
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+          <button class="ask-topic-btn active" onclick="setAskTopic(this,'הלכה')">⚖️ הלכה</button>
+          <button class="ask-topic-btn" onclick="setAskTopic(this,'פרשת השבוע')">📖 פרשה</button>
+          <button class="ask-topic-btn" onclick="setAskTopic(this,'חסידות')">✨ חסידות</button>
+          <button class="ask-topic-btn" onclick="setAskTopic(this,'תפילה')">🙏 תפילה</button>
+          <button class="ask-topic-btn" onclick="setAskTopic(this,'מחשבה')">💭 מחשבה</button>
+        </div>
+
+        <textarea id="askQuestion" placeholder="כתוב כאן את שאלתך... למשל: ״האם מותר לשלוח הודעה בשבת בשעה מוגדרת מראש?״" style="width:100%;min-height:110px;padding:1rem;border:1.5px solid rgba(201,168,76,0.35);border-radius:var(--radius-sm);font-family:'Heebo',sans-serif;font-size:1rem;direction:rtl;resize:vertical;color:var(--ink);background:#FFFEF9;outline:none;" onkeydown="if(event.ctrlKey&&event.key==='Enter')askSend()"></textarea>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+          <span style="font-size:0.82rem;color:var(--stone);">Ctrl+Enter לשליחה</span>
+          <button onclick="askSend()" id="askSendBtn" style="background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:white;border:none;border-radius:var(--radius-sm);padding:0.7rem 2rem;font-family:'Heebo',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:opacity 0.2s;">שלח שאלה ✨</button>
+        </div>
+      </div>
+
+      <!-- תשובה -->
+      <div id="askAnswerBox" style="display:none;background:white;border-radius:var(--radius);padding:1.5rem;border:1.5px solid rgba(201,168,76,0.5);box-shadow:var(--shadow-gold);">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+          <div style="font-weight:700;color:var(--gold-dark);font-size:1.05rem;">📜 תשובה</div>
+          <button onclick="askClear()" style="background:none;border:1px solid rgba(201,168,76,0.4);border-radius:20px;padding:3px 12px;font-size:0.78rem;color:var(--stone);cursor:pointer;font-family:'Heebo',sans-serif;">שאלה חדשה</button>
+        </div>
+        <div id="askAnswerText" style="line-height:1.9;color:var(--ink);font-size:1rem;white-space:pre-wrap;direction:rtl;"></div>
+        <div id="askSources" style="margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,0.2);font-size:0.85rem;color:var(--stone);"></div>
+      </div>
+
+      <!-- Loading -->
+      <div id="askLoading" style="display:none;text-align:center;padding:2rem;">
+        <div style="font-size:2rem;margin-bottom:0.5rem;animation:pulse 1.5s infinite;">📖</div>
+        <div style="color:var(--stone);">מחפש במקורות...</div>
+      </div>
+
+      <!-- שאלות לדוגמה -->
+      <div style="margin-top:2rem;">
+        <div style="font-weight:700;color:var(--stone);margin-bottom:0.75rem;font-size:0.9rem;">💡 שאלות לדוגמה:</div>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <button onclick="setAskExample(this)" class="ask-example-btn">האם מותר לאכול לפני תפילת שחרית?</button>
+          <button onclick="setAskExample(this)" class="ask-example-btn">מה ההבדל בין בינוני לרשע בתניא?</button>
+          <button onclick="setAskExample(this)" class="ask-example-btn">למה דוד המלך כתב תהילים?</button>
+          <button onclick="setAskExample(this)" class="ask-example-btn">מה פירוש ״ואהבת לרעך כמוך״ לפי הבעל שם טוב?</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 <div id="page-profile" class="page">
   <div style="background:var(--parchment);min-height:100vh;padding:2rem 0;">
     <div class="profile-page">
@@ -2341,6 +2454,9 @@
 
     currentPage = page;
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    if (page === 'ask') initAskPage();
+    if (page === 'profile') loadProfile();
   }
 
   // ─── CURRENCY DATA ───
@@ -4138,6 +4254,129 @@ const CAT_DATA = [
     card.querySelector('.rabbi-credit').textContent   = meta.rabbi;
     const btn = card.querySelector('button.btn-primary');
     if (btn) btn.onclick = () => { loadLesson(key); navigate('lesson'); };
+  }
+
+  // ─── AI ASK FEATURE ──────────────────────────────────────────
+  let _askTopic = 'הלכה';
+
+  function setAskTopic(btn, topic) {
+    _askTopic = topic;
+    document.querySelectorAll('.ask-topic-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function setAskExample(btn) {
+    document.getElementById('askQuestion').value = btn.textContent;
+    btn.closest('.page').querySelector('#askQuestion').focus();
+  }
+
+  function saveApiKey() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (!key.startsWith('sk-')) {
+      alert('מפתח לא תקין. חייב להתחיל ב-sk-');
+      return;
+    }
+    localStorage.setItem('ttt_anthropic_key', key);
+    document.getElementById('askApiSetup').style.display = 'none';
+    document.getElementById('apiKeyInput').value = '';
+    alert('✅ מפתח נשמר! עכשיו תוכל לשאול שאלות.');
+  }
+
+  function askClear() {
+    document.getElementById('askAnswerBox').style.display = 'none';
+    document.getElementById('askQuestion').value = '';
+    document.getElementById('askQuestion').focus();
+  }
+
+  async function askSend() {
+    const question = document.getElementById('askQuestion').value.trim();
+    if (!question) {
+      document.getElementById('askQuestion').focus();
+      return;
+    }
+
+    const apiKey = localStorage.getItem('ttt_anthropic_key');
+    if (!apiKey) {
+      document.getElementById('askApiSetup').style.display = 'block';
+      document.getElementById('askApiSetup').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    const sendBtn = document.getElementById('askSendBtn');
+    const loading = document.getElementById('askLoading');
+    const answerBox = document.getElementById('askAnswerBox');
+
+    sendBtn.disabled = true;
+    sendBtn.style.opacity = '0.5';
+    answerBox.style.display = 'none';
+    loading.style.display = 'block';
+    loading.scrollIntoView({ behavior: 'smooth' });
+
+    const systemPrompt = `אתה רב מלומד ובקי בכל תחומי התורה — הלכה, תנ"ך, גמרא, מחשבה, חסידות וקבלה.
+ענה בעברית בלבד, בצורה ברורה ומסודרת.
+הנחיות:
+- תמיד ציין מקורות אמיתיים (שם הספר, פרק, הלכה, סימן וסעיף)
+- אם זו שאלת הלכה — ציין את דעת השולחן ערוך ואחרונים רלוונטיים
+- אם זו שאלת מחשבה/חסידות — ציין מקורות מהרב הרלוונטי
+- היה מדויק ואמיתי — לא תמציא מקורות
+- בסוף כל תשובה הוסף שורת "📚 מקורות:" עם הרשימה
+- אורך תשובה: 200-350 מילים
+- הנושא שנשאלת: ${_askTopic}`;
+
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+          'anthropic-dangerous-direct-browser-calls': 'true',
+        },
+        body: JSON.stringify({
+          model: 'claude-opus-4-8',
+          max_tokens: 1024,
+          messages: [{ role: 'user', content: question }],
+          system: systemPrompt,
+        }),
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error?.message || `שגיאה ${resp.status}`);
+      }
+
+      const data = await resp.json();
+      const text = data.content?.[0]?.text || 'לא התקבלה תשובה';
+
+      // Split answer and sources
+      const parts = text.split('📚 מקורות:');
+      document.getElementById('askAnswerText').textContent = parts[0].trim();
+      document.getElementById('askSources').innerHTML = parts[1]
+        ? '<strong>📚 מקורות:</strong> ' + parts[1].trim()
+        : '';
+
+      loading.style.display = 'none';
+      answerBox.style.display = 'block';
+      answerBox.scrollIntoView({ behavior: 'smooth' });
+
+    } catch (e) {
+      loading.style.display = 'none';
+      if (e.message.includes('401') || e.message.includes('invalid')) {
+        localStorage.removeItem('ttt_anthropic_key');
+        document.getElementById('askApiSetup').style.display = 'block';
+        alert('❌ מפתח API לא תקין. נא להכניס שוב.');
+      } else {
+        alert('❌ שגיאה: ' + e.message);
+      }
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.style.opacity = '1';
+    }
+  }
+
+  function initAskPage() {
+    const hasKey = !!localStorage.getItem('ttt_anthropic_key');
+    document.getElementById('askApiSetup').style.display = hasKey ? 'none' : 'block';
   }
 
   // Run on load
