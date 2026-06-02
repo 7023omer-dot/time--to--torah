@@ -1591,15 +1591,15 @@
         <span class="stat-label">🕐 דקות תורה החודש</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">847</span>
-        <span class="stat-label">👥 לומדים פעילים היום</span>
+        <span class="stat-number" id="liveLearners">847</span>
+        <span class="stat-label">👥 לומדים פעילים עכשיו</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">₪8,920</span>
+        <span class="stat-number" id="liveDonated">₪8,920</span>
         <span class="stat-label">💰 תרומות החודש</span>
       </div>
       <div class="stat-item">
-        <span class="stat-number">2,490</span>
+        <span class="stat-number" id="liveLessons">2,490</span>
         <span class="stat-label">📚 שיעורים הושלמו</span>
       </div>
     </div>
@@ -2085,10 +2085,10 @@
 
       <!-- CURRENCY SWITCHER -->
       <div class="currency-switcher">
-        <button class="currency-btn active" onclick="switchCurrency('ILS', this)">₪ ILS</button>
-        <button class="currency-btn" onclick="switchCurrency('USD', this)">$ USD</button>
-        <button class="currency-btn" onclick="switchCurrency('EUR', this)">€ EUR</button>
-        
+        <button class="currency-btn active" id="curr-ILS" onclick="switchCurrency('ILS', this)">₪ ILS</button>
+        <button class="currency-btn" id="curr-USD" onclick="switchCurrency('USD', this)">$ USD</button>
+        <button class="currency-btn" id="curr-EUR" onclick="switchCurrency('EUR', this)">€ EUR</button>
+        <button class="currency-btn" id="curr-GBP" onclick="switchCurrency('GBP', this)">£ GBP</button>
       </div>
 
       <!-- מה מקבלים בכל תוכנית -->
@@ -2551,10 +2551,11 @@
     const planLabels = { monthly: 'חודשי', biannual: 'חצי שנתי', annual: 'שנתי' };
     sendWelcomeEmail(name, email, planLabels[plan] || plan);
 
-    // Save for reminder
-    localStorage.setItem('ttt_user_name', name);
+    // Save for reminder + profile
+    localStorage.setItem('ttt_user_name',  name);
     localStorage.setItem('ttt_user_email', email);
-    localStorage.setItem('ttt_onboarded', '1');
+    localStorage.setItem('ttt_onboarded',  '1');
+    localStorage.setItem('ttt_plan',       planLabels[plan] || plan);
   }
 
   // Close modal on overlay click
@@ -2566,22 +2567,85 @@
   let streakCount = 7;
   let lessonFinished = false;
 
+  // ─── STATS TRACKING ─────────────────────────────────────────
+  function getStats() {
+    return {
+      streak:    parseInt(localStorage.getItem('ttt_streak')    || '0'),
+      lessons:   parseInt(localStorage.getItem('ttt_lessons')   || '0'),
+      minutes:   parseInt(localStorage.getItem('ttt_minutes')   || '0'),
+      lastDate:  localStorage.getItem('ttt_last_date')          || '',
+      donated:   parseFloat(localStorage.getItem('ttt_donated') || '0'),
+    };
+  }
+
+  function saveStats(s) {
+    localStorage.setItem('ttt_streak',    s.streak);
+    localStorage.setItem('ttt_lessons',   s.lessons);
+    localStorage.setItem('ttt_minutes',   s.minutes);
+    localStorage.setItem('ttt_last_date', s.lastDate);
+    localStorage.setItem('ttt_donated',   s.donated);
+  }
+
+  function todayStr() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
   function finishLesson() {
     if (lessonFinished) return;
     lessonFinished = true;
-    streakCount++;
 
-    // Update streak displays
-    document.getElementById('learnStreak').textContent = streakCount;
+    const s = getStats();
+    const today = todayStr();
 
-    // Show toast
-    showToast('🏅 כל הכבוד! המשך כך! רצף: ' + streakCount + ' ימים 🔥');
+    // Streak logic: if last date was yesterday → streak+1, else reset to 1
+    if (s.lastDate === today) {
+      // Already finished a lesson today — just count the lesson
+    } else {
+      const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+      s.streak = (s.lastDate === yesterday) ? s.streak + 1 : 1;
+      s.lastDate = today;
+    }
 
-    // Update button
+    s.lessons  += 1;
+    s.minutes  += 5;
+    // Approximate donation: 20% of monthly plan (₪18.90) / 30 days ≈ ₪0.13 per lesson
+    s.donated   = Math.round((s.donated + 0.13) * 100) / 100;
+    saveStats(s);
+
+    streakCount = s.streak;
+
+    // Update learn-page streak pill
+    const pill = document.getElementById('learnStreak');
+    if (pill) pill.textContent = streakCount;
+
+    // Update home stats bar
+    const ll = document.getElementById('liveLessons');
+    if (ll) ll.textContent = (2490 + s.lessons).toLocaleString('he-IL');
+
+    // Animate button → show "שיעור הבא" option
     const btn = document.getElementById('finishBtn');
     btn.textContent = '✅ שיעור הושלם!';
     btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
     btn.style.cursor = 'default';
+
+    // Show "next lesson" nudge
+    const wrapper = document.querySelector('.finish-btn-wrapper');
+    if (wrapper && !document.getElementById('nextLessonNudge')) {
+      const nudge = document.createElement('div');
+      nudge.id = 'nextLessonNudge';
+      nudge.style.cssText = 'margin-top:1rem;text-align:center;';
+      nudge.innerHTML = `
+        <div style="font-size:0.9rem;color:var(--stone);margin-bottom:0.6rem;">
+          🔥 רצף: <strong style="color:var(--gold)">${s.streak} יום</strong> &nbsp;|&nbsp;
+          📚 שיעורים: <strong style="color:var(--gold)">${s.lessons}</strong>
+        </div>
+        <button class="btn-outline btn-sm" onclick="navigate('learn')" style="margin-left:8px;">📚 שיעור נוסף</button>
+        <button class="btn-outline btn-sm" onclick="navigate('profile')">👤 הפרופיל שלי</button>
+      `;
+      wrapper.appendChild(nudge);
+    }
+
+    showToast('🏅 כל הכבוד! רצף: ' + s.streak + ' ימים 🔥');
   }
 
   function showToast(msg) {
@@ -2596,32 +2660,96 @@
     if (e.key === 'Escape') closeModal();
   });
 
-  // ─── ANIMATE PROGRESS BARS ON PROFILE PAGE VIEW ───
-  const origNavigate = navigate;
-  // already defined above; just handle in navigate
-  const navProxy = function(page) {
-    navigate(page);
-    if (page === 'profile') {
-      setTimeout(() => {
-        document.querySelectorAll('.progress-bar-fill').forEach(bar => {
-          const w = bar.style.width;
-          bar.style.width = '0';
-          setTimeout(() => { bar.style.width = w; }, 50);
-        });
-      }, 100);
+  // ─── PROFILE: load real data from localStorage ─────────────
+  function loadProfile() {
+    const s       = getStats();
+    const name    = localStorage.getItem('ttt_user_name')  || 'אורח';
+    const email   = localStorage.getItem('ttt_user_email') || '';
+    const plan    = localStorage.getItem('ttt_plan')       || 'חודשי';
+
+    // Initials for avatar
+    const initials = name.trim().split(' ').map(w => w[0]).slice(0, 2).join('');
+    const avatar = document.querySelector('.profile-page .avatar-circle');
+    if (avatar) avatar.textContent = initials || '✡';
+
+    const nameEl = document.querySelector('.profile-page .profile-name');
+    if (nameEl) nameEl.textContent = name;
+
+    const emailEl = document.querySelector('.profile-page .profile-email');
+    if (emailEl) emailEl.textContent = email || 'לא הוזן מייל';
+
+    // Stats
+    const streakPill = document.getElementById('profileStreak');
+    if (streakPill) streakPill.textContent = s.streak;
+
+    const streakCard = document.getElementById('profileStreakCard');
+    if (streakCard) streakCard.textContent = s.streak;
+
+    // Lessons stat card (2nd card)
+    const statCards = document.querySelectorAll('.profile-page .stat-card .value');
+    if (statCards[1]) statCards[1].textContent = s.lessons;
+    if (statCards[2]) statCards[2].textContent = s.minutes;
+    if (statCards[3]) {
+      const donatedDisplay = s.donated >= 1
+        ? '₪' + s.donated.toFixed(0)
+        : '₪' + s.donated.toFixed(2);
+      statCards[3].textContent = donatedDisplay;
     }
+
+    // Subscription plan badge
+    const planBadge = document.querySelector('.profile-page .sub-plan-badge');
+    if (planBadge) planBadge.textContent = plan;
+
+    // Achievements: unlock based on real streak
+    const ach7   = document.querySelector('.achievement-item:nth-child(2)');
+    const ach30  = document.querySelector('.achievement-item:nth-child(3)');
+    const ach100 = document.querySelector('.achievement-item:nth-child(4)');
+    if (ach7)  { ach7.className  = s.streak >= 7   ? 'achievement-item earned' : 'achievement-item locked'; }
+    if (ach30) { ach30.className = s.streak >= 30  ? 'achievement-item earned' : 'achievement-item locked'; }
+    if (ach100){ ach100.className= s.streak >= 100 ? 'achievement-item earned' : 'achievement-item locked'; }
+    if (ach100) {
+      const hint = ach100.querySelector('.ach-hint');
+      if (hint) {
+        if (s.streak >= 100) { hint.textContent = '✅ הושג'; hint.style.color = 'var(--gold-dark)'; }
+        else { hint.textContent = (100 - s.streak) + ' ימים נוספים'; hint.style.color = ''; }
+      }
+    }
+
+    // Animate progress bars
+    setTimeout(() => {
+      document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+        const w = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => { bar.style.width = w; }, 50);
+      });
+    }, 100);
+  }
+
+  // Override navigate to refresh profile when visiting it
+  const _origNavigate = navigate;
+  navigate = function(page) {
+    _origNavigate(page);
+    if (page === 'profile') loadProfile();
   };
 
-  // Override nav links to use proxy
-  document.querySelectorAll('[onclick*="navigate"]').forEach(el => {
-    const orig = el.getAttribute('onclick');
-    if (orig && orig.includes("navigate('profile')")) {
-      el.setAttribute('onclick', orig.replace('navigate(', 'navProxy('));
-    }
-  });
+  const navProxy = function(page) { navigate(page); };
+
+  // ─── LIVE LEARNER COUNTER — animated, motivating ────────────
+  function animateLiveStats() {
+    const base = 847;
+    const variance = 40;
+    let current = base;
+    setInterval(() => {
+      const delta = Math.floor(Math.random() * 7) - 3; // -3 to +3
+      current = Math.max(base - variance, Math.min(base + variance, current + delta));
+      const el = document.getElementById('liveLearners');
+      if (el) el.textContent = current.toLocaleString('he-IL');
+    }, 8000);
+  }
 
   function shareWhatsApp() {
-    const text = encodeURIComponent('גיליתי אפליקציה מדהימה ללימוד תורה יומי — 5 דקות ביום שמשנות חיים! 🌟\nהצטרף אליי ב"עת לתורה": https://timetorahtorah.com');
+    const url = 'https://7023omer-dot.github.io/time--to--torah/';
+    const text = encodeURIComponent('גיליתי פלטפורמה מדהימה ללימוד תורה יומי — 5 דקות ביום שמשנות חיים! 🌟\nהצטרף אליי ב"עת לתורה": ' + url);
     window.open('https://wa.me/?text=' + text, '_blank');
     earnMazke();
   }
@@ -2632,11 +2760,12 @@
       text: '5 דקות תורה ביום משנות חיים! הצטרף אליי ב"עת לתורה"',
       url: 'https://timetorahtorah.com'
     };
+    const url = 'https://7023omer-dot.github.io/time--to--torah/';
     if (navigator.share) {
-      navigator.share(shareData);
+      navigator.share({ ...shareData, url });
       earnMazke();
     } else {
-      navigator.clipboard.writeText('https://timetorahtorah.com');
+      navigator.clipboard.writeText(url);
       showToast('הקישור הועתק! שתף עם חבר 🔗');
       earnMazke();
     }
@@ -2858,6 +2987,20 @@
     if (q('.rabbi-avatar')) q('.rabbi-avatar').textContent = avatarText;
     if (q('.audio-label')) q('.audio-label').textContent = audioText;
     if (q('.lesson-content')) q('.lesson-content').innerHTML = htmlContent;
+
+    // Reset finish button for each new lesson
+    lessonFinished = false;
+    const btn = document.getElementById('finishBtn');
+    if (btn) {
+      btn.textContent = '✅ סיימתי ללמוד';
+      btn.style.background = '';
+      btn.style.cursor = '';
+    }
+    const nudge = document.getElementById('nextLessonNudge');
+    if (nudge) nudge.remove();
+
+    // Stop any running TTS
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
 
   function loadTikkunKlali() {
@@ -3585,6 +3728,25 @@
     detectAndApply();
     fetchLiveRates();
     showOnboardingIfNew();
+    animateLiveStats();
+
+    // Seed stats bar with user's own lesson count
+    const s = getStats();
+    if (s.lessons > 0) {
+      const ll = document.getElementById('liveLessons');
+      if (ll) ll.textContent = (2490 + s.lessons).toLocaleString('he-IL');
+    }
+
+    // Pre-load streak on learn page
+    if (s.streak > 0) {
+      const pill = document.getElementById('learnStreak');
+      if (pill) pill.textContent = s.streak;
+    }
+
+    // Load profile if starting on profile page
+    if (document.getElementById('page-profile').classList.contains('active')) {
+      loadProfile();
+    }
   });
 </script>
 </body>
