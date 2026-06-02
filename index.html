@@ -27,7 +27,10 @@
         plan:     plan,
         app_name: 'Time to Torah — עת לתורה',
         learn_url: 'https://7023omer-dot.github.io/time--to--torah/',
-      }).catch(console.error);
+      }).then(
+        () => { console.log('✅ welcome email sent to ' + email); },
+        (err) => { console.error('❌ welcome email error:', JSON.stringify(err)); alert('שגיאה בשליחת מייל: ' + JSON.stringify(err)); }
+      );
     }
 
     function sendReminderConfirmEmail(name, email, time) {
