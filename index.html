@@ -473,13 +473,13 @@
       border-color: var(--gold);
     }
     .ask-example-btn {
-      background: var(--parchment);
+      background: var(--bg-dark);
       border: 1.5px solid rgba(201,168,76,0.3);
       border-radius: var(--radius-sm);
       padding: 0.6rem 1rem;
       font-family: 'Heebo', sans-serif;
       font-size: 0.92rem;
-      color: var(--ink);
+      color: var(--parchment);
       cursor: pointer;
       text-align: right;
       transition: all 0.2s;
@@ -550,7 +550,7 @@
     .badge-time {
       display: inline-block;
       background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: var(--white);
+      color: var(--bg-dark);
       font-size: 0.7rem;
       font-weight: 700;
       padding: 3px 10px;
@@ -558,7 +558,7 @@
     }
 
     /* ─── HOW IT WORKS ─── */
-    .how-section { background: var(--parchment); }
+    .how-section { background: var(--bg-dark); }
 
     .steps-grid {
       display: grid;
@@ -571,10 +571,10 @@
     .step-card {
       text-align: center;
       padding: 2rem 1.5rem;
-      background: var(--white);
+      background: linear-gradient(135deg, var(--bg-card), rgba(45, 10, 20, 0.6));
       border-radius: var(--radius);
-      border: 1px solid rgba(201,168,76,0.15);
-      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(196,163,70,0.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
       position: relative;
     }
 
@@ -586,7 +586,7 @@
       width: 32px;
       height: 32px;
       background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: var(--white);
+      color: var(--bg-dark);
       border-radius: 50%;
       font-weight: 700;
       font-size: 0.875rem;
@@ -602,20 +602,20 @@
     }
 
     .step-title {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.15rem;
       font-weight: 700;
-      color: var(--ink);
+      color: var(--gold-light);
       margin-bottom: 0.5rem;
     }
 
     .step-sub {
       font-size: 0.85rem;
-      color: var(--stone);
+      color: var(--gold-subtle);
     }
 
     /* ─── PRICING ─── */
-    .pricing-section { background: var(--white); }
+    .pricing-section { background: var(--bg-dark); }
 
     .pricing-grid {
       display: grid;
@@ -627,8 +627,8 @@
     }
 
     .pricing-card {
-      background: var(--parchment);
-      border: 1.5px solid rgba(201,168,76,0.2);
+      background: linear-gradient(135deg, var(--bg-card), rgba(45, 10, 20, 0.6));
+      border: 1.5px solid rgba(196,163,70,0.3);
       border-radius: var(--radius);
       padding: 2rem 1.5rem;
       text-align: center;
@@ -638,8 +638,8 @@
 
     .pricing-card.popular {
       border: 2px solid var(--gold);
-      background: linear-gradient(160deg, #fffdf5, var(--parchment));
-      box-shadow: var(--shadow-gold);
+      background: linear-gradient(160deg, rgba(45, 10, 20, 0.9), var(--bg-card));
+      box-shadow: 0 8px 32px rgba(240,216,120,0.2);
       transform: scale(1.04);
     }
 
@@ -649,7 +649,7 @@
       right: 50%;
       transform: translateX(50%);
       background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: var(--white);
+      color: var(--bg-dark);
       font-size: 0.75rem;
       font-weight: 700;
       padding: 4px 14px;
@@ -658,24 +658,24 @@
     }
 
     .plan-name {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.2rem;
       font-weight: 700;
-      color: var(--ink);
+      color: var(--gold-light);
       margin-bottom: 0.5rem;
     }
 
     .plan-price {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 2.2rem;
-      font-weight: 900;
-      color: var(--gold-dark);
+      font-weight: 700;
+      color: var(--gold);
       margin-bottom: 0.25rem;
     }
 
     .plan-period {
       font-size: 0.8rem;
-      color: var(--stone);
+      color: var(--gold-subtle);
       margin-bottom: 1.5rem;
     }
 
@@ -706,7 +706,7 @@
     }
 
     /* ─── TESTIMONIALS ─── */
-    .testimonials-section { background: var(--parchment); }
+    .testimonials-section { background: var(--bg-dark); }
 
     .testimonials-grid {
       display: grid;
@@ -727,7 +727,7 @@
 
     .testimonial-card::before {
       content: '"';
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 5rem;
       color: rgba(201,168,76,0.15);
       position: absolute;
@@ -739,7 +739,7 @@
     .testimonial-text {
       font-size: 0.95rem;
       line-height: 1.7;
-      color: var(--ink);
+      color: var(--parchment);
       margin-bottom: 1rem;
       position: relative;
     }
@@ -774,7 +774,7 @@
     .footer-logo .menorah { font-size: 1.5rem; }
 
     .footer-logo .brand {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.3rem;
       font-weight: 700;
       color: var(--gold);
@@ -800,7 +800,7 @@
     .footer-links a:hover { color: var(--gold); }
 
     .footer-charity {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1rem;
       color: var(--gold);
       margin-bottom: 1rem;
@@ -925,7 +925,7 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      background: var(--parchment);
+      background: var(--bg-dark);
       border-radius: var(--radius-sm);
       padding: 1rem 1.25rem;
       margin: 1rem 0;
@@ -941,7 +941,7 @@
       align-items: center;
       justify-content: center;
       color: var(--white);
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.2rem;
       font-weight: 700;
       flex-shrink: 0;
@@ -950,7 +950,7 @@
     .rabbi-info .name {
       font-weight: 700;
       font-size: 0.95rem;
-      color: var(--ink);
+      color: var(--parchment);
     }
 
     .rabbi-info .bio {
@@ -1034,7 +1034,7 @@
     .tts-subtitle { font-size: 0.82rem; color: rgba(255,255,255,0.55); }
     .tts-controls { display: flex; gap: 10px; margin-bottom: 1rem; }
     .tts-btn { border: none; border-radius: 25px; padding: 10px 22px; font-family: 'Heebo', sans-serif; font-size: 0.92rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-    .tts-play { background: var(--gold); color: var(--ink); }
+    .tts-play { background: var(--gold); color: var(--parchment); }
     .tts-play:hover { background: var(--gold-light); }
     .tts-play.playing { background: #E8A020; }
     .tts-stop { background: rgba(255,255,255,0.12); color: white; }
@@ -1064,7 +1064,7 @@
     }
 
     audio::-webkit-media-controls-panel {
-      background: var(--parchment);
+      background: var(--bg-dark);
     }
 
     .finish-btn-wrapper {
@@ -1118,7 +1118,7 @@
     .related-title {
       font-weight: 700;
       font-size: 0.875rem;
-      color: var(--ink);
+      color: var(--parchment);
       margin-bottom: 0.4rem;
       line-height: 1.4;
     }
@@ -1169,11 +1169,11 @@
     }
 
     .donation-title {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.25rem;
       font-weight: 700;
       margin-bottom: 1.25rem;
-      color: var(--ink);
+      color: var(--parchment);
       text-align: center;
     }
 
@@ -1200,7 +1200,7 @@
     .donation-option:hover { border-color: var(--gold); }
 
     .donation-icon { font-size: 1.75rem; display: block; margin-bottom: 0.5rem; }
-    .donation-name { font-weight: 700; font-size: 0.85rem; color: var(--ink); }
+    .donation-name { font-weight: 700; font-size: 0.85rem; color: var(--parchment); }
     .donation-desc { font-size: 0.75rem; color: var(--stone); margin-top: 0.25rem; }
 
     /* ─── MODAL ─── */
@@ -1317,10 +1317,10 @@
     }
 
     .success-title {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.6rem;
       font-weight: 700;
-      color: var(--ink);
+      color: var(--parchment);
       margin-bottom: 0.75rem;
     }
 
@@ -1354,7 +1354,7 @@
       align-items: center;
       justify-content: center;
       color: var(--white);
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.6rem;
       font-weight: 700;
       flex-shrink: 0;
@@ -1362,10 +1362,10 @@
     }
 
     .profile-name {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.5rem;
       font-weight: 700;
-      color: var(--ink);
+      color: var(--parchment);
     }
 
     .profile-email {
@@ -1395,7 +1395,7 @@
 
     .stat-card .icon { font-size: 1.5rem; margin-bottom: 0.4rem; display: block; }
     .stat-card .value {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.75rem;
       font-weight: 700;
       color: var(--gold-dark);
@@ -1413,10 +1413,10 @@
     }
 
     .section-heading {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 1.2rem;
       font-weight: 700;
-      color: var(--ink);
+      color: var(--parchment);
       margin-bottom: 1.25rem;
     }
 
@@ -1445,7 +1445,7 @@
     }
 
     .ach-icon { font-size: 1.75rem; display: block; margin-bottom: 0.4rem; }
-    .ach-name { font-weight: 700; font-size: 0.825rem; color: var(--ink); }
+    .ach-name { font-weight: 700; font-size: 0.825rem; color: var(--parchment); }
     .share-btns { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; justify-content: center; }
     .share-btn { border: none; border-radius: 20px; padding: 5px 12px; font-size: 0.72rem; cursor: pointer; font-family: 'Heebo', sans-serif; font-weight: 600; transition: transform 0.15s; }
     .share-btn:hover { transform: scale(1.05); }
