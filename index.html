@@ -71,12 +71,16 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700;900&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Noto+Serif+Hebrew:wght@300;400;700&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --gold: #C9A84C;
-      --gold-light: #E8C97A;
-      --gold-dark: #A07830;
+      --bg-dark: #1a0a0e;
+      --bg-card: #2D0A14;
+      --gold: #F0D878;
+      --gold-light: #E2C46A;
+      --gold-dark: #C4A346;
+      --gold-subtle: rgba(196,163,70,0.55);
+      --gold-muted: rgba(196,163,70,0.3);
       --parchment: #FDF6E3;
       --ink: #1A1208;
       --stone: #8B7355;
@@ -91,14 +95,14 @@
 
     body {
       font-family: 'Heebo', sans-serif;
-      background: var(--parchment);
-      color: var(--ink);
+      background: var(--bg-dark);
+      color: var(--parchment);
       direction: rtl;
       min-height: 100vh;
     }
 
     h1, h2, h3, h4 {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
     }
 
     /* ─── NAVBAR ─── */
@@ -106,15 +110,15 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(253,246,227,0.97);
+      background: rgba(26, 10, 14, 0.98);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid rgba(201,168,76,0.2);
+      border-bottom: 1px solid rgba(196,163,70,0.25);
       padding: 0 2rem;
       height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      box-shadow: 0 1px 12px rgba(26,18,8,0.06);
+      box-shadow: 0 1px 12px rgba(0,0,0,0.4);
     }
 
     .navbar-logo {
@@ -131,10 +135,10 @@
     }
 
     .navbar-logo .brand {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-weight: 700;
       font-size: 1.35rem;
-      color: var(--gold-dark);
+      color: var(--gold);
       letter-spacing: -0.01em;
       background: linear-gradient(135deg, var(--gold-dark), var(--gold));
       -webkit-background-clip: text;
@@ -268,7 +272,7 @@
 
     /* ─── HERO ─── */
     .hero {
-      background: var(--parchment);
+      background: linear-gradient(135deg, var(--bg-dark) 0%, #240809 100%);
       position: relative;
       overflow: hidden;
       padding: 90px 2rem 80px;
@@ -277,10 +281,10 @@
 
     .hero::before {
       content: "תורה";
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: 28vw;
-      font-weight: 900;
-      color: rgba(201,168,76,0.05);
+      font-weight: 700;
+      color: rgba(240,216,120,0.08);
       position: absolute;
       top: 50%;
       left: 50%;
@@ -291,26 +295,80 @@
     }
 
     .hero-pasuk {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Noto Serif Hebrew', serif;
       font-size: 1rem;
-      color: var(--gold-dark);
+      color: var(--gold-light);
       opacity: 0.85;
       margin-bottom: 1.2rem;
       font-style: italic;
       letter-spacing: 0.02em;
     }
-    .hero-subtitle-he { font-family: 'Frank Ruhl Libre', serif; font-size: 1.4rem; color: var(--gold); opacity: 0.8; margin-top: -0.5rem; margin-bottom: 0.5rem; display: block; }
+    .hero-subtitle-he { font-family: 'Noto Serif Hebrew', serif; font-size: 1.4rem; color: var(--gold); opacity: 0.85; margin-top: -0.5rem; margin-bottom: 0.5rem; display: block; letter-spacing: 3px; }
     .hero-mission { max-width: 700px; margin: 1.8rem auto 2rem; text-align: right; }
-    .mission-text { font-family: 'Heebo', sans-serif; font-size: 1.05rem; line-height: 1.9; color: var(--ink); margin-bottom: 1rem; opacity: 0.9; }
-    .mission-quote { font-family: 'Frank Ruhl Libre', serif; font-size: 1.5rem; color: var(--gold-dark); text-align: center; margin: 1.5rem 0; padding: 1rem 2rem; border-right: 4px solid var(--gold); background: rgba(201,168,76,0.07); border-radius: 8px; }
-    .mission-quote-src { display: block; font-size: 0.85rem; color: var(--stone); margin-top: 0.3rem; font-style: italic; }
-    .mission-highlight { display: flex; gap: 1rem; align-items: flex-start; background: linear-gradient(135deg, rgba(201,168,76,0.12), rgba(201,168,76,0.04)); border: 1.5px solid rgba(201,168,76,0.4); border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; font-size: 0.97rem; line-height: 1.8; color: var(--ink); text-align: right; }
+    .mission-text { font-family: 'Heebo', sans-serif; font-size: 1.05rem; line-height: 1.9; color: var(--parchment); margin-bottom: 1rem; opacity: 0.85; }
+    .mission-quote { font-family: 'Noto Serif Hebrew', serif; font-size: 1.5rem; color: var(--gold); text-align: center; margin: 1.5rem 0; padding: 1rem 2rem; border-right: 4px solid var(--gold); background: rgba(196,163,70,0.1); border-radius: 8px; }
+    .mission-quote-src { display: block; font-size: 0.85rem; color: var(--gold-muted); margin-top: 0.3rem; font-style: italic; }
+    .mission-highlight { display: flex; gap: 1rem; align-items: flex-start; background: linear-gradient(135deg, rgba(196,163,70,0.12), rgba(196,163,70,0.04)); border: 1.5px solid rgba(196,163,70,0.4); border-radius: 12px; padding: 1.2rem 1.5rem; margin: 1.5rem 0; font-size: 0.97rem; line-height: 1.8; color: var(--parchment); text-align: right; }
     .mission-highlight-icon { font-size: 2rem; flex-shrink: 0; }
+    /* ─── שלוש השאלות ─── */
+    .three-questions {
+      max-width: 800px;
+      margin: 2.5rem auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .question-card {
+      background: rgba(45, 10, 20, 0.8);
+      border: 1px solid rgba(196, 163, 70, 0.4);
+      border-radius: 8px;
+      padding: 1.8rem 1.5rem;
+      text-align: right;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .question-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 0.5px;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(196,163,70,0.6), rgba(196,163,70,0));
+    }
+
+    .question-number {
+      font-family: 'Cinzel', serif;
+      font-size: 2rem;
+      color: var(--gold);
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      opacity: 0.9;
+    }
+
+    .question-text {
+      font-family: 'Noto Serif Hebrew', serif;
+      font-size: 1.3rem;
+      color: var(--gold-light);
+      font-weight: 500;
+      letter-spacing: 1px;
+      line-height: 1.7;
+      margin-bottom: 0.8rem;
+    }
+
+    .question-desc {
+      font-family: 'Heebo', sans-serif;
+      font-size: 0.95rem;
+      color: rgba(253, 246, 227, 0.65);
+      line-height: 1.6;
+    }
+
     .hero-tag {
       display: inline-block;
-      background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(201,168,76,0.05));
-      border: 1px solid rgba(201,168,76,0.4);
-      color: var(--gold-dark);
+      background: linear-gradient(135deg, rgba(240,216,120,0.15), rgba(226,196,106,0.05));
+      border: 1px solid rgba(196,163,70,0.4);
+      color: var(--gold);
       font-size: 0.85rem;
       font-weight: 500;
       padding: 6px 18px;
@@ -320,9 +378,9 @@
     }
 
     .hero h1 {
-      font-family: 'Frank Ruhl Libre', serif;
+      font-family: 'Cinzel', serif;
       font-size: clamp(4rem, 12vw, 9rem);
-      font-weight: 900;
+      font-weight: 700;
       line-height: 1;
       background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold) 50%, var(--gold-light) 100%);
       -webkit-background-clip: text;
@@ -330,6 +388,7 @@
       background-clip: text;
       margin-bottom: 1.25rem;
       position: relative;
+      text-shadow: 0 4px 40px rgba(240,216,120,0.2);
     }
 
     .hero-subtitle {
@@ -1615,6 +1674,25 @@
         <span style="color:var(--stone);">מי שרוצה ללמוד יותר — ברוך הבא באהבה גדולה. התורה היא ים אין סוף.</span>
       </div>
       </p>
+
+      <!-- שלוש השאלות של הסנהדרין -->
+      <div class="three-questions">
+        <div class="question-card">
+          <div class="question-number">?</div>
+          <div class="question-text">נשאת ונתת באמונה?</div>
+          <div class="question-desc">האם חיית בצדק וביושרה? האם הייתה לך אמונה חזקה בה׳ בכל מצב?</div>
+        </div>
+        <div class="question-card">
+          <div class="question-number">?</div>
+          <div class="question-text">קבעת עיתים לתורה?</div>
+          <div class="question-desc">האם ייחדת זמן ללימוד תורה? האם הקדשת את עצמך לחיזוק הידע היהודי?</div>
+        </div>
+        <div class="question-card">
+          <div class="question-number">?</div>
+          <div class="question-text">ציפית לישועה?</div>
+          <div class="question-desc">האם היה לך תקווה בביאת משיח? האם חייפת לתקומה הרוחנית של עם ישראל?</div>
+        </div>
+      </div>
 
     </div>
 
