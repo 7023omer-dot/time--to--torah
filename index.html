@@ -77,9 +77,9 @@
       --bg-dark: #1E0610;
       --bg-card: #2D0A14;
       --gold: #F0D878;
-      --gold-light: #F0D878;
+      --gold-light: #F5E8A0;
       --gold-dark: #C4A346;
-      --gold-subtle: #C4A346;
+      --gold-subtle: #D9C896;
       --gold-muted: rgba(196,163,70,0.45);
       --parchment: #F5EDD8;
       --ink: #1A1208;
@@ -5020,10 +5020,13 @@ const CAT_DATA = [
 
     const p = parashas[num] || {name:'פרשה', chap:'', content:'<p>פרשה זו עדיין מצפה לתוכן מורחב.</p>'};
 
+    const parashaWithBack = `<div style="direction:rtl;">${p.content}</div>
+      <div style="margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,0.2);"><button onclick="navigate('parashas')" style="background:none;border:1.5px solid var(--gold);color:var(--gold-dark);border-radius:20px;padding:6px 18px;font-family:'Heebo',sans-serif;font-size:0.9rem;cursor:pointer;">← חזרה לפרשות</button></div>`;
+
     displayLesson(
       `${p.name}`,
       ``,
-      `<div style="direction:rtl;">${p.content}</div>`,
+      parashaWithBack,
       'פ'
     );
     navigate('lesson');
