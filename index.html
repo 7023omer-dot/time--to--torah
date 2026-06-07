@@ -3185,9 +3185,19 @@
     if (q('.lesson-content')) q('.lesson-content').innerHTML = htmlContent;
     // Restore elements hidden by displayLesson
     if (q('.rabbi-card')) q('.rabbi-card').style.display = '';
-    if (q('.video-placeholder')) q('.video-placeholder').style.display = '';
-    if (q('.audio-player-wrapper')) q('.audio-player-wrapper').style.display = '';
     if (q('.lesson-meta')) q('.lesson-meta').style.display = '';
+
+    // Only show video/audio placeholders if they have actual content
+    // Hide empty placeholders to avoid cluttering the page
+    if (q('.video-placeholder')) q('.video-placeholder').style.display = 'none';
+    if (q('.audio-player-wrapper')) {
+      const audioSrc = q('.audio-player-wrapper audio source');
+      if (audioSrc && audioSrc.src && audioSrc.src.trim()) {
+        q('.audio-player-wrapper').style.display = '';
+      } else {
+        q('.audio-player-wrapper').style.display = 'none';
+      }
+    }
 
     // Reset finish button for each new lesson
     lessonFinished = false;
