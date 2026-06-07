@@ -3177,11 +3177,17 @@
     const q = (s) => document.querySelector('#page-lesson ' + s);
     if (q('.category-badge')) q('.category-badge').textContent = catText;
     if (q('h1.lesson-title')) q('h1.lesson-title').textContent = titleText;
+    if (q('#lessonSubtitle')) q('#lessonSubtitle').textContent = '';
     if (q('.rabbi-card .name')) q('.rabbi-card .name').textContent = rabbiText;
     if (q('.rabbi-card .bio')) q('.rabbi-card .bio').textContent = bioText;
     if (q('.rabbi-avatar')) q('.rabbi-avatar').textContent = avatarText;
     if (q('.audio-label')) q('.audio-label').textContent = audioText;
     if (q('.lesson-content')) q('.lesson-content').innerHTML = htmlContent;
+    // Restore elements hidden by displayLesson
+    if (q('.rabbi-card')) q('.rabbi-card').style.display = '';
+    if (q('.video-placeholder')) q('.video-placeholder').style.display = '';
+    if (q('.audio-player-wrapper')) q('.audio-player-wrapper').style.display = '';
+    if (q('.lesson-meta')) q('.lesson-meta').style.display = '';
 
     // Reset finish button for each new lesson
     lessonFinished = false;
@@ -4627,6 +4633,27 @@ const CAT_DATA = [
   function initAskPage() {
     const hasKey = !!localStorage.getItem('ttt_anthropic_key');
     document.getElementById('askApiSetup').style.display = hasKey ? 'none' : 'block';
+  }
+
+  function displayLesson(title, subtitle, htmlContent, avatarChar) {
+    const ql = (s) => document.querySelector('#page-lesson ' + s);
+    if (ql('h1.lesson-title')) ql('h1.lesson-title').textContent = title;
+    if (ql('#lessonSubtitle')) ql('#lessonSubtitle').textContent = subtitle;
+    if (ql('.lesson-content')) ql('.lesson-content').innerHTML = htmlContent;
+    // Hide elements that don't apply to Tehillim
+    if (ql('.rabbi-card')) ql('.rabbi-card').style.display = 'none';
+    if (ql('.video-placeholder')) ql('.video-placeholder').style.display = 'none';
+    if (ql('.audio-player-wrapper')) ql('.audio-player-wrapper').style.display = 'none';
+    if (ql('.lesson-meta')) ql('.lesson-meta').style.display = 'none';
+    if (ql('.category-badge')) ql('.category-badge').textContent = 'תהילים';
+    // Reset finish button
+    lessonFinished = false;
+    const btn = document.getElementById('finishBtn');
+    if (btn) { btn.textContent = '✅ סיימתי ללמוד'; btn.style.background = ''; btn.style.cursor = ''; }
+    const nudge = document.getElementById('nextLessonNudge');
+    if (nudge) nudge.remove();
+    ttsCharIndex = 0; ttsFullText = ''; ttsPlaying = false; ttsPaused = false;
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
 
   function loadTehillimPsalm(dayNum, psalmNum) {
