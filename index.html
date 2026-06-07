@@ -5704,10 +5704,8 @@ const CAT_DATA = [
     const dayNames = {1:'יום ראשון',2:'יום שני',3:'יום שלישי',4:'יום רביעי',5:'יום חמישי',6:'יום שישי',7:'יום שבת'};
     const dayName = dayNames[dayNum] || 'תהילים';
     const hn = psalmNum;
-    const enhanced = `<div style="direction:rtl;">
-      ${psalm.content}
-      <div style="margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,0.2);"><button onclick="loadLesson('tehillim',${dayNum})" style="background:none;border:1.5px solid var(--gold);color:var(--gold-dark);border-radius:20px;padding:6px 18px;font-family:'Heebo',sans-serif;font-size:0.9rem;cursor:pointer;">← חזרה ל${dayName}</button></div>
-    </div>`;
+    const enhanced = `${psalm.content}
+      <div style="margin-top:2rem;padding-top:1rem;border-top:1px solid rgba(201,168,76,0.2);"><button onclick="loadLesson('tehillim',${dayNum})" style="background:none;border:1.5px solid var(--gold);color:var(--gold-dark);border-radius:20px;padding:6px 18px;font-family:'Heebo',sans-serif;font-size:0.9rem;cursor:pointer;">← חזרה ל${dayName}</button></div>`;
     displayLesson(
       `מזמור ${hn} — ${psalm.title}`,
       `${psalm.topic} • ${psalm.sub}`,
