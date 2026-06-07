@@ -74,14 +74,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Noto+Serif+Hebrew:wght@300;400;700&family=Heebo:wght@300;400;500;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-dark: #1a0a0e;
+      --bg-dark: #1E0610;
       --bg-card: #2D0A14;
       --gold: #F0D878;
-      --gold-light: #E2C46A;
+      --gold-light: #F0D878;
       --gold-dark: #C4A346;
-      --gold-subtle: rgba(196,163,70,0.55);
-      --gold-muted: rgba(196,163,70,0.3);
-      --parchment: #FDF6E3;
+      --gold-subtle: #C4A346;
+      --gold-muted: rgba(196,163,70,0.45);
+      --parchment: #F5EDD8;
       --ink: #1A1208;
       --stone: #8B7355;
       --white: #FFFFFF;
@@ -204,33 +204,33 @@
 
     /* ─── BUTTONS ─── */
     .btn-primary {
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      color: var(--parchment);
-      font-family: 'Heebo', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 14px 32px;
+      background: linear-gradient(135deg, #F0D878 0%, #C4A346 100%);
+      color: #1E0610;
+      font-family: 'Cinzel', serif;
+      font-weight: 500;
+      font-size: 13px;
+      padding: 14px 44px;
       border: none;
       border-radius: 28px;
       cursor: pointer;
       transition: all 0.25s;
-      box-shadow: 0 4px 16px rgba(201,168,76,0.4);
+      box-shadow: 0 6px 24px rgba(196,163,70,0.28);
       display: inline-block;
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(201,168,76,0.5);
+      box-shadow: 0 12px 32px rgba(196,163,70,0.38);
     }
 
     .btn-outline {
       background: transparent;
-      color: var(--gold-dark);
-      font-family: 'Heebo', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      padding: 13px 32px;
-      border: 2px solid var(--gold);
+      color: rgba(196,163,70,0.80);
+      font-family: 'Cinzel', serif;
+      font-weight: 400;
+      font-size: 12px;
+      padding: 12px 36px;
+      border: 0.5px solid rgba(196,163,70,0.45);
       border-radius: 28px;
       cursor: pointer;
       transition: all 0.25s;
@@ -238,9 +238,8 @@
     }
 
     .btn-outline:hover {
-      background: var(--gold);
-      color: var(--parchment);
-      transform: translateY(-2px);
+      border-color: #C4A346; color: #F0D878;
+      
     }
 
     .btn-sm {
@@ -258,6 +257,33 @@
     }
 
     /* ─── SECTION HELPERS ─── */
+
+    /* ─── ANIMATED QUESTIONS ─── */
+    .animated-questions {
+      text-align: center; padding: 32px 0; direction: rtl;
+      margin-bottom: 1.5rem;
+    }
+    .question-text {
+      font-family: 'Noto Serif Hebrew', serif;
+      font-size: clamp(24px, 4vw, 40px); font-weight: 400;
+      color: #F5EDD8; letter-spacing: 0.5px; line-height: 1.4;
+      transition: opacity 0.6s ease, transform 0.6s ease;
+      min-height: 60px; display: flex; align-items: center; justify-content: center;
+    }
+    .question-dots {
+      display: flex; gap: 8px; justify-content: center; margin: 16px 0;
+    }
+    .dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(196,163,70,0.20);
+      transition: background 0.4s, transform 0.4s;
+    }
+    .dot.active { background: #C4A346; transform: scale(1.4); }
+    .question-sub {
+      font-family: 'Noto Serif Hebrew', serif;
+      font-size: 12px; font-weight: 300;
+      color: rgba(196,163,70,0.45); letter-spacing: 2px;
+    }
     .section { padding: 72px 2rem; background: var(--bg-dark); }
     .section-narrow { max-width: 1100px; margin: 0 auto; }
     .section-title {
@@ -1625,7 +1651,15 @@
 
   <!-- HERO -->
   <section class="hero">
-    <p class="hero-pasuk" id="dailyPasuk">״וְזָכַרְתָּ אֶת ה׳ אֱלֹקֶיךָ כִּי הוּא הַנֹּתֵן לְךָ כֹּחַ לַעֲשׂוֹת חָיִל״ — דברים ח׳, י״ח</p>
+    <div class="animated-questions" id="animatedQuestions">
+      <p class="question-text">נָשָׂאתָ וְנָתַתָּ בֶּאֱמוּנָה?</p>
+      <div class="question-dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+      <p class="question-sub">שלוש השאלות שישאלו אותך ביום הדין — תלמוד בבלי, שבת ל״א</p>
+    </div>
     <span class="hero-tag">✨ 5 דקות תורה ביום משנות חיים</span>
     <h1>Time to Torah</h1><p class="hero-subtitle-he">עת לתורה</p>
 
@@ -5686,6 +5720,38 @@ const CAT_DATA = [
   // Run on load
   window.addEventListener('load', () => {
     detectAndApply();
+
+    // ─── Initialize Animated Questions ───
+    function initAnimatedQuestions() {
+      const questions = [
+        'נָשָׂאתָ וְנָתַתָּ בֶּאֱמוּנָה?',
+        'קָבַעְתָּ עִתִּים לַתּוֹרָה?',
+        'צִפִּיתָ לִישׁוּעָה?'
+      ];
+      let current = 0;
+      const container = document.getElementById('animatedQuestions');
+      if (!container) return;
+
+      setInterval(() => {
+        const textEl = container.querySelector('.question-text');
+        const dots = container.querySelectorAll('.dot');
+
+        textEl.style.opacity = '0';
+        textEl.style.transform = 'translateY(-12px)';
+
+        setTimeout(() => {
+          current = (current + 1) % questions.length;
+          textEl.textContent = questions[current];
+          dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i === current);
+          });
+
+          textEl.style.opacity = '1';
+          textEl.style.transform = 'translateY(0)';
+        }, 600);
+      }, 3500);
+    }
+    initAnimatedQuestions();
     fetchLiveRates();
     showOnboardingIfNew();
     animateLiveStats();
