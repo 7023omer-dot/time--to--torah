@@ -4913,19 +4913,15 @@ const CAT_DATA = [
       });
 
       // Use our proxy to avoid CORS issues
-      const proxyUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'https://api.anthropic.com/v1/messages'
-        : '/api/ask';
+      // Cloudflare Worker proxy — handles CORS for static GitHub Pages sites
+      const PROXY_URL = 'https://ttt-proxy.7023omer.workers.dev';
 
-      const headers = { 'content-type': 'application/json', 'x-api-key': apiKey };
-      if (proxyUrl.includes('anthropic.com')) {
-        headers['anthropic-version'] = '2023-06-01';
-        headers['anthropic-dangerous-direct-browser-calls'] = 'true';
-      }
-
-      const resp = await fetch(proxyUrl, {
+      const resp = await fetch(PROXY_URL, {
         method: 'POST',
-        headers,
+        headers: {
+          'content-type': 'application/json',
+          'x-api-key': apiKey,
+        },
         body: reqBody,
       });
 
