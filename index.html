@@ -4969,7 +4969,7 @@ const CAT_DATA = [
 
   function displayLesson(title, subtitle, htmlContent, avatarChar) {
     const ql = (s) => document.querySelector('#page-lesson ' + s);
-    if (ql('h1.lesson-title')) ql('h1.lesson-title').textContent = title;
+    if (ql('h1.lesson-title')) ql('h1.lesson-title').innerHTML = title;
     if (ql('#lessonSubtitle')) ql('#lessonSubtitle').textContent = subtitle;
     if (ql('.lesson-content')) ql('.lesson-content').innerHTML = htmlContent;
     // Hide elements that don't apply to Tehillim
@@ -4977,6 +4977,7 @@ const CAT_DATA = [
     if (ql('.video-placeholder')) ql('.video-placeholder').style.display = 'none';
     if (ql('.audio-player-wrapper')) ql('.audio-player-wrapper').style.display = 'none';
     if (ql('.lesson-meta')) ql('.lesson-meta').style.display = 'none';
+    if (ql('#chapterInfo')) ql('#chapterInfo').style.display = 'none';
     if (ql('.category-badge')) ql('.category-badge').textContent = 'תהילים';
     // Reset finish button
     lessonFinished = false;
