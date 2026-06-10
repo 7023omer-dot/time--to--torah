@@ -2406,6 +2406,12 @@
         </div>
       </div>
 
+      <!-- PER-CATEGORY PROGRESS -->
+      <div class="achievements-section">
+        <div class="section-heading">📊 התקדמות לפי קטגוריה</div>
+        <div id="catProgressGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.7rem;"></div>
+      </div>
+
       <!-- SUBSCRIPTION -->
       <div class="subscription-section">
         <div class="section-heading">💎 המנוי שלי</div>
@@ -2795,6 +2801,9 @@
     s.donated   = Math.round((s.donated + 0.13) * 100) / 100;
     saveStats(s);
 
+    // Record per-category progress (persists across refresh)
+    recordCatProgress(currentLessonCat, currentChapterNum);
+
     // Auto-advance to next chapter
     const catData = CAT_DATA.find(c => c.key === currentLessonCat);
     if (currentLessonCat && catData) {
@@ -2830,7 +2839,17 @@
       btn.textContent = '→ פרק הבא';
       btn.style.background = 'linear-gradient(135deg, #4a90e2, #2d5aa6)';
       btn.style.cursor = 'pointer';
-      btn.onclick = () => { lessonFinished = false; loadLesson(currentLessonCat, nextChapterID); };
+      const advanceCat = currentLessonCat;
+      const fromChapter = currentChapterNum;
+      btn.onclick = () => { lessonFinished = false; loadLesson(advanceCat, nextChapterID); };
+      // Auto-advance to the next lesson shortly after finishing,
+      // unless the user has already navigated elsewhere.
+      setTimeout(() => {
+        if (currentPage === 'lesson' && currentLessonCat === advanceCat && currentChapterNum === fromChapter) {
+          lessonFinished = false;
+          loadLesson(advanceCat, nextChapterID);
+        }
+      }, 1800);
     } else {
       btn.textContent = '✅ סיימת קטגוריה זו!';
       btn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
@@ -2929,6 +2948,21 @@
       }
     }
 
+    // Per-category progress breakdown
+    const cpGrid = document.getElementById('catProgressGrid');
+    if (cpGrid && typeof CAT_DATA !== 'undefined') {
+      cpGrid.innerHTML = CAT_DATA.map(c => {
+        const total = c.chapters ? c.chapters.length : 0;
+        const done = catProgressCount(c.key);
+        const pct = total ? Math.min(100, Math.round((done / total) * 100)) : 0;
+        return `<div style="background:rgba(45,10,20,0.6);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:0.8rem;">
+          <div style="font-size:0.85rem;font-weight:700;color:#F0D878;margin-bottom:0.4rem;">${c.icon || '📖'} ${c.name}</div>
+          <div style="font-size:0.78rem;color:#F0D878;margin-bottom:0.4rem;">${done}/${total} שיעורים</div>
+          <div style="height:5px;background:rgba(201,168,76,0.2);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:3px;"></div></div>
+        </div>`;
+      }).join('');
+    }
+
     // Animate progress bars
     setTimeout(() => {
       document.querySelectorAll('.progress-bar-fill').forEach(bar => {
@@ -2939,13 +2973,27 @@
     }, 100);
   }
 
-  // Override navigate to refresh profile when visiting it
+  // Override navigate to refresh profile when visiting it + manage browser history
   const _origNavigate = navigate;
-  navigate = function(page) {
+  navigate = function(page, opts) {
     _origNavigate(page);
     if (page === 'profile') loadProfile();
     if (page === 'learn')   renderLearnCats();
+    // Push internal history state so the browser BACK button navigates
+    // inside the app instead of leaving the site (e.g. back to Google).
+    if (!opts || !opts.fromPop) {
+      try { history.pushState({ page: page }, '', '#' + page); } catch (e) {}
+    }
   };
+
+  // Browser back / swipe-back → navigate internally, never leave the app
+  window.addEventListener('popstate', function(e) {
+    const page = (e.state && e.state.page) || 'home';
+    navigate(page, { fromPop: true });
+  });
+
+  // Seed the initial history entry so the first BACK stays in-app
+  try { history.replaceState({ page: 'home' }, '', '#home'); } catch (e) {}
 
   const navProxy = function(page) { navigate(page); };
 
@@ -4747,6 +4795,27 @@ const CAT_DATA = [
   function markCatDone(key) {
     const done = getDoneCats();
     if (!done.includes(key)) { done.push(key); localStorage.setItem('ttt_done_cats', JSON.stringify(done)); }
+  }
+
+  // ─── PER-CATEGORY PROGRESS (persistent) ──────────────────────
+  // Stores the set of completed chapter IDs for each category so the
+  // count survives a page refresh and is reported per-category.
+  function getCatProgress() {
+    try { return JSON.parse(localStorage.getItem('ttt_cat_progress') || '{}'); } catch(e) { return {}; }
+  }
+
+  function recordCatProgress(key, chapterId) {
+    if (!key) return;
+    const all = getCatProgress();
+    const list = all[key] || [];
+    if (!list.includes(chapterId)) list.push(chapterId);
+    all[key] = list;
+    localStorage.setItem('ttt_cat_progress', JSON.stringify(all));
+  }
+
+  function catProgressCount(key) {
+    const all = getCatProgress();
+    return (all[key] || []).length;
   }
 
   function renderLearnCats() {
