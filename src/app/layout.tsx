@@ -1,33 +1,11 @@
 import type { Metadata } from 'next'
-import { Frank_Ruhl_Libre, Heebo } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-
-const frankRuhlLibre = Frank_Ruhl_Libre({
-  subsets: ['hebrew', 'latin'],
-  weight: ['300', '400', '500', '700', '900'],
-  variable: '--font-frank-ruhl',
-  display: 'swap',
-})
-
-const heebo = Heebo({
-  subsets: ['hebrew', 'latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-heebo',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
-  title: 'עת לתורה - Time to Torah',
+  title: 'Time to Torah — עת לתורה',
   description: 'למד תורה יומית ותרום לצדקה | Daily Torah learning with charitable giving',
   keywords: ['Torah', 'תורה', 'לימוד', 'צדקה', 'יהדות', 'Judaism'],
-  openGraph: {
-    title: 'עת לתורה - Time to Torah',
-    description: 'למד תורה יומית ותרום לצדקה',
-    locale: 'he_IL',
-    type: 'website',
-  },
 }
 
 export default function RootLayout({
@@ -36,13 +14,20 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="he" dir="rtl" className={`${frankRuhlLibre.variable} ${heebo.variable}`}>
-      <body className="min-h-screen flex flex-col bg-parchment text-ink">
+    <html lang="he" dir="rtl">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;700&family=Frank+Ruhl+Libre:wght@300;400;500;700;900&family=Noto+Serif+Hebrew:wght@300;400;700&family=Heebo:wght@300;400;500;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
         <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        {children}
+        {/* TOAST (preserved from live site) */}
+        <div className="toast" id="toast">🏅 כל הכבוד! המשך כך!</div>
       </body>
     </html>
   )

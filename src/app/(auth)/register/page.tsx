@@ -1,9 +1,12 @@
 'use client'
 
+
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { registerSchema } from '@/lib/validations'
+
+export const dynamic = 'force-dynamic'
 
 export default function RegisterPage() {
   const router = useRouter()
