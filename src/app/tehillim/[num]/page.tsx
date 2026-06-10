@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getPsalm, getAllPsalms, hebNum } from '@/lib/content'
+import FinishLessonButton from '@/components/FinishLessonButton'
 
 export function generateStaticParams() {
   return getAllPsalms().map((p) => ({ num: String(p.num) }))
@@ -24,6 +25,7 @@ export default function PsalmPage({ params }: { params: { num: string } }) {
             </p>
           )) : <p>הטקסט יתווסף בקרוב.</p>}
         </div>
+        <FinishLessonButton category="tehillim" chapterId={num} nextHref={num < 150 ? `/tehillim/${num + 1}` : undefined} />
       </div>
     </div>
   )
