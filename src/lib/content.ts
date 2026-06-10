@@ -24,3 +24,16 @@ export function hebNum(n: number): string {
   if (rem === 16) return hundreds[h] + 'טז'
   return hundreds[h] + tens[Math.floor(rem / 10)] + ones[rem % 10]
 }
+
+// ─── Parashiot ───────────────────────────────────────────────
+import parashiotData from '../../data/parashiot.json'
+
+export type Parasha = { num: number; name: string; chap: string; text: string; html: string }
+const PARASHIOT = parashiotData as unknown as Record<string, Parasha>
+
+export function getParasha(num: number): Parasha | null {
+  return PARASHIOT[String(num)] ?? null
+}
+export function getAllParashiot(): Parasha[] {
+  return Object.values(PARASHIOT).sort((a, b) => a.num - b.num)
+}
